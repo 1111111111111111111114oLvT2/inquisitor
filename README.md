@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔍 inquisitor
+# inquisitor
 
 **Optimal-path problem solving for AI agents**
 Triage · Prune · Investigate — never overcomplicate
@@ -211,5 +211,18 @@ uv run ruff check .      # lint
 - **trafilatura + readability-lxml** — content extraction (two-tier fallback)
 - **SQLite** — investigation state
 - **pytest / ruff** — tests and lint
+
+---
+
+## Acknowledgments
+
+The methodology and architecture stand on these shoulders:
+
+- **Sir Isaac Newton — [*Opticks* (1704)](https://www.gutenberg.org/ebooks/33504)** — the Analysis→Synthesis method and the closing Queries pattern. Public domain via Project Gutenberg.
+- **Gerard J. Holzmann (NASA/JPL) — [*The Power of Ten: Rules for Developing Safety Critical Code*](https://spinroot.com/gerard/pdf/P10.pdf)** — the template for a rule set small enough to remember and strict enough to check mechanically.
+- **[andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)** (forrestchang) — behavioral guidelines derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
+- **[ponytail](https://github.com/dietrichgebert/ponytail)** (Dietrich Gebert) — the decision ladder and the lazy-senior-dev discipline.
+- **ayumi** — the clean backend/adapter separation and the keyless DuckDuckGo + trafilatura search pattern.
+- **[last30days-skill](https://github.com/mvanhorn/last30days-skill)** (mvanhorn) — inspiration for multi-source research design and the SKILL.md-as-contract pattern.
 
 Licensed under [MIT](LICENSE).
