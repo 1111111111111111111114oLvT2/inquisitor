@@ -68,9 +68,25 @@ inquisitor/
     └── ...
 ```
 
-## Newton 7-Phase State Machine
+## Triage Layer (v0.2 revision)
 
-The agent must progress through these phases. No skipping. Current phase tracked by `inquisitor_phase` in a SQLite-backed session store.
+The core operating principle is heuristic search with pruning (alpha-beta / MCTS analogy):
+the agent cannot explore every branch, so it estimates problem complexity first and prunes
+ceremony that adds no information.
+
+| Class | Signal | Path |
+|-------|--------|------|
+| TRIVIAL | Fix is obvious and local | Fix → verify. No phases, no tools. |
+| SIMPLE | Cause is clear, single component | Collapsed path: criteria → minimal evidence → fix → verify |
+| COMPLEX | Root cause unknown, multi-component, or 2 failed attempts | Full Newton 7-phase with session tracking |
+
+Escalation is allowed (TRIVIAL→SIMPLE→COMPLEX) when the heuristic proves wrong.
+De-escalation of rigor (skipping VALIDATE on a COMPLEX problem) is not.
+Search/analyze/trace are tools invoked when local evidence is insufficient — never mandatory rituals.
+
+## Newton 7-Phase State Machine (COMPLEX path only)
+
+For COMPLEX problems the agent progresses through these phases. Current phase tracked by `inquisitor_phase` in a SQLite-backed session store, which acts as persistent memory across turns.
 
 ```
   DEFINE ──► AXIOMS ──► ANALYSIS ──► EXPERIMENT

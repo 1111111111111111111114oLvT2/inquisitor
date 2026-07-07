@@ -1,6 +1,8 @@
 """Content extraction — trafilatura with readability-lxml fallback."""
 
+import ipaddress
 import re
+from urllib.parse import urlparse
 
 import httpx
 from readability import Document
@@ -20,9 +22,35 @@ def _random_ua() -> str:
     return random.choice(USER_AGENTS)
 
 
+def is_safe_url(url: str) -> bool:
+    """SSRF guard: only http(s), no loopback/private/link-local targets.
+
+    ponytail: name-level check; DNS-rebinding defense would need resolve-then-pin,
+    add if this ever runs server-side with untrusted multi-tenant input.
+    """
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+        host = parsed.hostname or ""
+        if not host or host == "localhost" or host.endswith(".localhost") or host.endswith(".local"):
+            return False
+        try:
+            ip = ipaddress.ip_address(host)
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+                return False
+        except ValueError:
+            pass  # hostname, not a literal IP
+        return True
+    except Exception:
+        return False
+
+
 def extract(url: str, html: str | None = None) -> str:
     """Extract readable content from a URL. Returns markdown-formatted text."""
     if html is None:
+        if not is_safe_url(url):
+            return f"Blocked unsafe URL (non-http or private/internal target): {url}"
         html = _fetch_html(url)
 
     if not html:

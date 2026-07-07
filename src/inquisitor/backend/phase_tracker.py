@@ -28,7 +28,12 @@ class PhaseTracker:
     """Manages Newton 7-phase state for an investigation session."""
 
     def __init__(self, project_path: str | None = None, session_name: str = "default"):
+        import re
+
         from inquisitor.config import SESSION_DIR
+
+        # security: sanitize session_name — it flows into a filename (path traversal)
+        session_name = re.sub(r"[^A-Za-z0-9_-]", "_", session_name) or "default"
 
         root = Path(project_path).resolve() if project_path else Path.cwd().resolve()
         project_id = self._project_id(root)
