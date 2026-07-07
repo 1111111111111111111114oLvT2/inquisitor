@@ -63,44 +63,78 @@ Every problem goes through 10-second triage before anything else:
 
 ---
 
-## Quick Start
+## Installation
+
+Requires [uv](https://github.com/astral-sh/uv) and Python 3.12+.
+
+### Step 1 — Clone and install
 
 ```bash
-git clone https://github.com/0x2fycy3/inquisitor.git
-cd inquisitor
+git clone https://github.com/0x2fycy3/inquisitor.git ~/tools/inquisitor
+cd ~/tools/inquisitor
 uv sync
-uv run inquisitor-mcp        # starts the MCP server (stdio)
 ```
 
-### Register with your agent
+> The clone path is up to you — just use the **same absolute path** in the config below. `~` does not expand inside JSON config files, so write the full path (e.g. `/home/you/tools/inquisitor`).
 
-**Claude Code / Claude Desktop** (`.mcp.json` or settings):
+You do **not** run the server manually. It's a stdio MCP server: your agent spawns and manages it automatically. (If you do run `uv run inquisitor-mcp` by hand, it prints a ready message on stderr and waits silently — that's normal. Ctrl+C to exit.)
+
+### Step 2 — Register the MCP server with your agent
+
+**OpenCode** — add to `~/.config/opencode/opencode.json` (global) or `./opencode.json` (per-project):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "inquisitor": {
+      "type": "local",
+      "command": [
+        "uv", "run",
+        "--directory", "/home/you/tools/inquisitor",
+        "inquisitor-mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+**Claude Code** — add to `.mcp.json` in your project, or `~/.claude.json` for all projects:
 
 ```json
 {
   "mcpServers": {
     "inquisitor": {
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/inquisitor", "inquisitor-mcp"]
+      "args": ["run", "--directory", "/home/you/tools/inquisitor", "inquisitor-mcp"]
     }
   }
 }
 ```
 
-**OpenCode** (`opencode.json`):
+**Claude Desktop** — same `mcpServers` block in `claude_desktop_config.json` (Settings → Developer → Edit Config).
 
-```json
-{
-  "mcp": {
-    "inquisitor": {
-      "type": "local",
-      "command": ["uv", "run", "--directory", "/path/to/inquisitor", "inquisitor-mcp"]
-    }
-  }
-}
+### Step 3 — Install the skill (the behavioral layer)
+
+Symlink it so it stays up to date with the repo:
+
+```bash
+# OpenCode
+mkdir -p ~/.config/opencode/skills
+ln -s /home/you/tools/inquisitor/skills/inquisitor ~/.config/opencode/skills/inquisitor
+
+# Claude Code
+mkdir -p ~/.claude/skills
+ln -s /home/you/tools/inquisitor/skills/inquisitor ~/.claude/skills/inquisitor
 ```
 
-Then install the skill by copying (or symlinking) `skills/inquisitor/` into your agent's skill directory (e.g. `~/.config/opencode/skills/` or `~/.claude/skills/`).
+(Copying the folder works too — you'll just need to re-copy after updates.)
+
+### Step 4 — Restart your agent
+
+Config is loaded at startup. Quit and reopen OpenCode / Claude Code, then verify:
+the `inquisitor_*` tools appear in the tool list, and the `inquisitor` skill is available.
 
 ---
 

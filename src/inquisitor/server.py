@@ -111,6 +111,13 @@ def inquisitor_verify(
 
 def main():
     """Entry point for inquisitor-mcp CLI."""
+    import sys
+
+    print(
+        "inquisitor-mcp ready (stdio) — this server is spawned by your MCP client, "
+        "not used directly. Waiting for client on stdin... (Ctrl+C to exit)",
+        file=sys.stderr,
+    )
     mcp.run()
 
 
