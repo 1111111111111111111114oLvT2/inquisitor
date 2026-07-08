@@ -35,7 +35,7 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 
 ## Shipping
 
-Match the repo's commit convention (read `git log --oneline -10` first — follow conventional commits only if the repo does). Atomic commits. PR body: problem → evidence → fix → how verified → open queries. No secrets, no unrelated dirty files.
+NEVER commit/push/PR unless the user explicitly asked. Before committing, state the current branch by name and confirm the target (here / new branch / other) — unless the user already named it this conversation. Match the repo's commit convention (read `git log --oneline -10` first — follow conventional commits only if the repo does). Atomic commits. PR body: problem → evidence → fix → how verified → open queries. No secrets, no unrelated dirty files.
 
 ## Code (ponytail ladder — stop at first rung that holds)
 

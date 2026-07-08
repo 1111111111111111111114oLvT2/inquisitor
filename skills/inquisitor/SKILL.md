@@ -166,7 +166,8 @@ Can't name one? Run the experiment now, or write in the PR: `"I could not verify
 
 ### Shipping — commits and PRs
 
-- **Detect the repo's convention, then match it**: read `git log --oneline -10` before writing a commit message. Repo uses conventional commits (`feat:`, `fix:`, `docs:`) → follow it, correct type, imperative mood. Repo uses another style → match that instead. Never impose a convention the repo doesn't use.
+- **Never commit, push, or open a PR unless the user explicitly asked for it.** Finishing the work is not permission to ship it. Default end state: changes staged in the working tree, user decides.
+- **Confirm the branch BEFORE committing.** State the current branch by name and ask: commit here, create a new branch, or another existing one? Exception: the user already named the target branch in this conversation — then just restate it (`committing to <branch> as you asked`) and proceed. Committing straight to `main`/`master`/`develop` without the user having named it is never assumed.
 - **Atomic commits**: one logical change per commit. Never mix the fix with drive-by refactors (P10 rule 4 already bans those).
 - **PR description mirrors the investigation**: problem (one sentence) → evidence (`file:line`, tool output) → fix → how it was verified (the runtime signal from self-audit) → `## Open queries` if any. A reviewer should be able to check your reasoning, not just your diff.
 - Never commit secrets; never commit unrelated files that happen to be dirty in the tree.
