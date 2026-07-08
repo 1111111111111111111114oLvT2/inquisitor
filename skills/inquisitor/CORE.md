@@ -31,6 +31,7 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 - Name the runtime signal that proves the fix is live, and the smallest check that fails if it's a no-op. Can't name one → verify now or tell the user "I could not verify runtime; test X". Ship-if-unsure is banned.
 - Hold ≥2 competing hypotheses while investigating; experiments discriminate, not confirm.
 - Deferred verification → leave `# inquisitor: <what was skipped, how to close>` marker.
+- Open queries route to a durable home (marker / PR body / session store / QUERIES.md — ask before creating), formatted `[OPEN] <question> — closes when: <check>`. At the start of SIMPLE+ work, check existing markers and QUERIES.md — an old open query may be today's bug. Close what you can.
 
 ## Code (ponytail ladder — stop at first rung that holds)
 

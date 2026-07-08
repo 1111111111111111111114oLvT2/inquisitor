@@ -105,8 +105,21 @@ Only now write code. Every line traces to a Phase-4 finding. Ponytail ladder act
 ### VALIDATE — Check against DEFINE
 Run `inquisitor_verify`. Run the test suite, linter, typechecker. Solution must satisfy the Phase-1 success criteria — not a different, easier problem. Fails → loop back to ANALYSIS or EXPERIMENT.
 
-### QUERY — Surface the unknowns
+### QUERY — Surface the unknowns, then PARK them somewhere durable
 Newton ended *Opticks* with open Queries, not false certainty. Before closing: what's still unknown? What could be wrong? Which assumptions are unverified? What should a human check next?
+
+**A query that lives only in the chat response is a query lost.** Route every open query to exactly ONE durable home:
+
+| Query is attached to... | Durable home |
+|---|---|
+| A specific line of code | `# inquisitor:` marker at that line |
+| The change being shipped | PR body, under an `## Open queries` heading |
+| The investigation itself (cross-turn) | `inquisitor_phase_set(open_questions=...)` — the session store |
+| The project long-term (survives sessions and PRs) | `QUERIES.md` in the repo — but ASK the user before creating it; never litter a repo unprompted |
+
+Format every query as a closable item, not a musing: `[OPEN] <question> — closes when: <specific check>`. A query without a closing condition is a worry, not a query.
+
+**Resurfacing (the other half)**: at DEFINE — and at the start of any SIMPLE+ task — check the existing ledgers: grep for `inquisitor:` markers, read `QUERIES.md` if present, run `inquisitor_phase_get` for session state. An old open query may BE the problem you were just handed, or may invalidate the assumption you were about to make. Close what you can: flip `[OPEN]` to `[CLOSED <date>: <what settled it>]` — a ledger nobody reviews is write-only noise.
 
 ## Always Active (all paths, all depths)
 
