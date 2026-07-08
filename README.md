@@ -59,7 +59,7 @@ Every problem goes through 10-second triage before anything else:
                                                tracking as memory)
 ```
 
-**Escalation is allowed** — two failed fix attempts or contradicting evidence bumps the class up. **Inflated ceremony is not** — a 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
+**Escalation is enforced, not just allowed.** The subjective estimate is only a starting point: objective triggers (touching infra/deploy/routing/config, auth/security, data migrations, multi-file fixes, prod-only symptoms) force a minimum class regardless of how "clear" the problem feels, and a 3-question confidence check (read the runtime path? can name the runtime signal? verified the platform assumption?) bumps the class up per unanswered question. Downgrades are never automatic. **Inflated ceremony is not allowed either** — a 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
 
 ---
 

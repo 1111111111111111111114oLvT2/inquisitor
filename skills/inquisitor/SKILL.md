@@ -14,13 +14,45 @@ A chess engine doesn't analyze all positions — it uses heuristics to cut bad b
 
 ## Step 0: TRIAGE (always — takes 10 seconds)
 
-Before anything else, estimate the problem's complexity. This is your heuristic function.
+Before anything else, estimate the problem's complexity. This is your heuristic function — but heuristics fail, so the subjective table below is only the STARTING POINT. The objective rules that follow can force the class UP.
+
+### Subjective baseline (starting point)
 
 | Class | Signal | Path |
 |-------|--------|------|
 | **TRIVIAL** | Fix is obvious and local. Typo, rename, one-liner, clear error message pointing at the exact line. | Fix it. Verify. Done. **No phases, no tools, no ceremony.** |
 | **SIMPLE** | Cause is clear or nearly clear. Single component. You know what to check. | Collapsed path: state success criteria → gather minimal evidence → fix → verify. |
 | **COMPLEX** | Root cause unknown. Multiple components. Conflicting evidence. Or: two fix attempts already failed. | Full Newton 7-phase method with `inquisitor_phase` session tracking. |
+
+### Auto-escalate — objective triggers that OVERRIDE the subjective classification
+
+"Feels clear" is exactly what an agent thinks right before a confident wrong fix. If any of the following fires, force the class UP regardless of how the problem "feels". Downgrades are never automatic — only escalation is:
+
+| Trigger | Minimum class | Extra requirement |
+|---|---|---|
+| Touches config, infra, deploy, routing, CI, hosting, DNS, env, build pipeline | SIMPLE | Loop-closure MANDATORY (see below) |
+| Touches auth, security, secrets, permissions, cryptography | COMPLEX | — |
+| Touches data schemas, migrations, deletes, financial values, PII | COMPLEX | — |
+| Touches concurrency, state machines, distributed coordination, race conditions | COMPLEX | — |
+| Fix spans 2+ files | SIMPLE | — |
+| Symptom reproduces in production but not locally | COMPLEX | — |
+| Cannot reach the runtime to observe the fix | COMPLEX | Escalate to user before shipping |
+| Previous fix attempt failed | Up one class | Say why |
+| Unfamiliar codebase or unfamiliar framework | SIMPLE minimum | `inquisitor_analyze` required |
+
+### Confidence check — the agent's certainty is a signal, not a fact
+
+Before committing to any class, answer to yourself in the response:
+
+1. Have I read the actual runtime code path (not just the change site, not just docs, not just tests)?
+2. Can I name the specific runtime signal (URL response, log line, HTTP header, metric, DB row) that would prove the fix worked in production?
+3. Have I verified the platform / framework / tool assumption my fix depends on?
+
+- **All 3 YES** → the subjective class stands.
+- **1 NO** → minimum SIMPLE.
+- **2+ NO** → minimum COMPLEX.
+
+"Feels right" with unanswered questions is the failure mode inquisitor exists to prevent. Certainty without verification is not a shortcut — it is the bug.
 
 ### Pruning rules (alpha-beta for investigations)
 
@@ -65,7 +97,7 @@ Confirm the P10 rules (below) and any project-specific constraints are loaded. T
 *Analysis ought ever to precede Synthesis* (Newton). Break the problem down. Each sub-problem must be independently solvable, verifiable, and sequenced. Use `inquisitor_analyze` for unfamiliar codebases, `inquisitor_trace` to map the code paths in play. Output: a plan of sub-goals, each with a verification check.
 
 ### EXPERIMENT — Act, observe, do NOT assume
-*Hypotheses non fingo.* For each sub-goal: run the cheapest experiment that could confirm or kill the hypothesis (search, trace, test run, code read). Record what the tool ACTUALLY returned, not what you expected. Ambiguous result → another experiment, never an inference. No code generation in this phase.
+*Hypotheses non fingo.* Hold at least TWO competing hypotheses at all times — a single hypothesis anchors you, and every subsequent read becomes confirmation bias. The best experiment is the one that DISCRIMINATES between them, not the one that confirms your favorite. For each sub-goal: run the cheapest experiment that could confirm or kill a hypothesis (search, trace, test run, code read). Record what the tool ACTUALLY returned, not what you expected. Ambiguous result → another experiment, never an inference. No code generation in this phase.
 
 ### SYNTHESIS — Reconstruct from verified components
 Only now write code. Every line traces to a Phase-4 finding. Ponytail ladder active. Mark deliberate simplifications with `# ponytail: <ceiling and upgrade path>`.
@@ -99,6 +131,38 @@ Bug fix = root cause, not symptom. Grep every caller of the function you touch; 
 - **Surgical Changes**: don't touch adjacent code, comments, or formatting; match existing style; remove only orphans YOUR change created; every changed line traces to the request.
 - **Goal-Driven Execution**: "fix the bug" → "write a test that reproduces it, then make it pass". Multi-step work: `[step] → verify: [check]`.
 
+### Loop-closure — MANDATORY for any config, infra, deploy, routing, CI, or hosting change
+
+**Correct diagnosis + wrong target system = an inert PR.** This is the single most common way a technically-correct fix ships nothing: the change looks right for one platform, but the app actually runs on another that never reads the file. Before writing the change, answer these in the response and cite evidence:
+
+1. **What reads this file?** Grep the repo for the filename in build scripts, CI configs, deploy manifests, Dockerfiles. If nothing references it, the file is a candidate no-op.
+2. **What platform actually serves this app?** Cite a config that proves it (a build manifest, a hosting config, a Dockerfile + registry, a CI deploy step). "It's in Git" is not evidence.
+3. **Filenames LIE across platforms.** A routing/redirect/headers file that looks canonical for one host may be ignored by another. Same filename, different systems, different formats. Verify per platform, don't assume from the extension.
+4. **Panel vs. repo.** Many managed hosts let routing, env vars, and redirects live EITHER in a repo file OR in a web panel that overrides the file. Editing the file is inert if the platform reads the panel. Ask the user, or find documentation.
+5. **Trace end-to-end**: source file → build step → deployed artifact → runtime consumer. Any link you can't cite = candidate no-op.
+
+### Self-audit before declaring done
+
+Before closing SYNTHESIS or opening a PR, answer aloud in the response:
+
+- **Observability**: name the exact runtime signal (URL response, log line, HTTP header, metric, DB row) that would prove the fix is live in production.
+- **Inertness test**: name the smallest check that would fail if the fix is silently a no-op.
+- **Reviewer question**: if a reviewer asked "how did you verify this?", can you point at runtime evidence, not just a code read?
+
+Can't name one? Run the experiment now, or write in the PR: `"I could not verify runtime; a human should test X."` **Ship-if-unsure is banned.** If the fix touches infra/deploy/config/routing and you cannot reach the runtime, escalate to the user before opening the PR.
+
+### `# inquisitor:` markers — deferred verifications
+
+When you deliberately skip an experiment, a verification, or a phase, leave a marker in code or the PR body naming WHAT was skipped and the check needed to close it:
+
+```
+# inquisitor: skipped runtime verification, human should confirm route resolves in prod
+# inquisitor: assumed platform reads this file, verify against actual deploy manifest
+// inquisitor: panel-vs-repo not checked, config may need to be set in the host's console
+```
+
+Simple reads as intent, not ignorance. `/inquisitor-debt` harvests these into a ledger so shortcuts don't rot into "later means never".
+
 ### P10 hard rules (mechanically checkable)
 
 | # | Rule |
@@ -118,7 +182,7 @@ Bug fix = root cause, not symptom. Grep every caller of the function you touch; 
 
 | Tool | When |
 |------|------|
-| `inquisitor_search` | Local evidence is insufficient: unknown error, unfamiliar library behavior, need current best practices. Tips: `site:` filter, `time_range="year"` for recency, `fetch_content=True` for full text. |
+| `inquisitor_search` | Local evidence is insufficient: unknown error, unfamiliar library behavior, need current best practices. **MANDATORY when your fix depends on an assumed platform/tool behavior you have not verified** (e.g. "does platform X read this config file?") — search the docs BEFORE writing the fix, not after it fails. Tips: `site:` filter, `time_range="year"` for recency, `fetch_content=True` for full text. |
 | `inquisitor_analyze` | Entering an unfamiliar codebase. Not needed when you already know the layout. |
 | `inquisitor_trace` | The problem spans multiple functions/files and you need callers/callees of a symbol. |
 | `inquisitor_phase_get` / `inquisitor_phase_set` | COMPLEX path only. Persistent memory across turns: record findings, evidence, open questions at each phase. |
