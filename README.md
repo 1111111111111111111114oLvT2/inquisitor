@@ -271,6 +271,12 @@ docling is heavy (pulls in `torch` + ML models) and slow on CPU, so `auto` only 
 
 ---
 
+## Companion skills
+
+inquisitor is a router as much as an investigator — it delegates to purpose-built skills (`/tdd`, `/code-review`, …) when one fits, but it never installs them for you. See **[docs/companion-skills.md](docs/companion-skills.md)** for the curated set worth installing alongside it (mattpocock/skills, spec-kit, last30days, ponytail, gstack) and design references.
+
+---
+
 ## Development
 
 ```bash
