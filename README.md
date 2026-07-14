@@ -54,9 +54,6 @@ flowchart TD
 
     TR -.->|"objective trigger /<br/>failed fix / low confidence"| SI
     SI -.->|"escalate — never downgrade"| CO
-
-    classDef triage fill:#8A2BE2,stroke:#5a1a9e,color:#fff
-    class T triage
 ```
 
 **Escalation is enforced, not just allowed.** The subjective estimate is only a starting point: objective triggers (touching infra/deploy/routing/config, auth/security, data migrations, multi-file fixes, prod-only symptoms) force a minimum class regardless of how "clear" the problem feels, and a 3-question confidence check (read the runtime path? can name the runtime signal? verified the platform assumption?) bumps the class up per unanswered question. Downgrades are never automatic. **Inflated ceremony is not allowed either** — a 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
@@ -67,12 +64,19 @@ flowchart TD
 
 Requires [uv](https://github.com/astral-sh/uv) and Python 3.12+.
 
-### Claude Code — one-line plugin install (recommended)
+### Claude Code — plugin install (recommended)
 
-inquisitor ships as a [Claude Code plugin](https://code.claude.com/docs/en/plugins). This installs **both the skill and the MCP server** in one step — no cloning, no editing absolute paths, no manual symlink. From inside Claude Code:
+inquisitor ships as a [Claude Code plugin](https://code.claude.com/docs/en/plugins) that installs **both the skill and the MCP server** — no cloning, no editing absolute paths, no manual symlink.
+
+From within Claude Code, first add the marketplace:
 
 ```
 /plugin marketplace add 0x2fycy3/inquisitor
+```
+
+Then install the plugin:
+
+```
 /plugin install inquisitor@inquisitor
 ```
 
