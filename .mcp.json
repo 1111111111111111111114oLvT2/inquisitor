@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "inquisitor": {
+      "command": "uv",
+      "args": ["run", "--directory", "${CLAUDE_PLUGIN_ROOT}", "inquisitor-mcp"]
+    }
+  }
+}

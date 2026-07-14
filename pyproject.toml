@@ -1,8 +1,30 @@
 [project]
-name = "inquisitor"
+name = "inquisitor-mcp"
 version = "0.1.0"
-description = "AI Agent investigation and research tool with Newton-method problem solving"
+description = "Optimal-path problem solving for AI agents — an MCP server for triage, web search, project analysis, code tracing, and Newton-method investigation."
+readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "0x2fycy3" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "claude",
+    "llm",
+    "web-search",
+    "problem-solving",
+    "developer-tools",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
     "mcp>=1.0.0",
     "httpx>=0.27.0",
@@ -10,6 +32,11 @@ dependencies = [
     "trafilatura>=2.0.0",
     "readability-lxml>=0.8.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/0x2fycy3/inquisitor"
+Repository = "https://github.com/0x2fycy3/inquisitor"
+Issues = "https://github.com/0x2fycy3/inquisitor/issues"
 
 [project.scripts]
 inquisitor-mcp = "inquisitor.server:main"

@@ -8,7 +8,7 @@ Triage · Prune · Investigate — never overcomplicate
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![MCP](https://img.shields.io/badge/MCP-server-8A2BE2?style=flat-square)](https://modelcontextprotocol.io)
 [![uv](https://img.shields.io/badge/uv-package-6A3C8E?style=flat-square)](https://github.com/astral-sh/uv)
-[![Tests](https://img.shields.io/badge/tests-36_passing-brightgreen?style=flat-square)]()
+[![CI](https://img.shields.io/github/actions/workflow/status/0x2fycy3/inquisitor/ci.yml?style=flat-square&label=CI)](https://github.com/0x2fycy3/inquisitor/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)]()
 
 </div>
@@ -67,7 +67,32 @@ Every problem goes through 10-second triage before anything else:
 
 Requires [uv](https://github.com/astral-sh/uv) and Python 3.12+.
 
-### Step 1 — Clone and install
+### Claude Code — one-line plugin install (recommended)
+
+inquisitor ships as a [Claude Code plugin](https://code.claude.com/docs/en/plugins). This installs **both the skill and the MCP server** in one step — no cloning, no editing absolute paths, no manual symlink. From inside Claude Code:
+
+```
+/plugin marketplace add 0x2fycy3/inquisitor
+/plugin install inquisitor@inquisitor
+```
+
+That's it. The plugin bundles the `inquisitor-mcp` server (registered automatically via `${CLAUDE_PLUGIN_ROOT}`) and the `inquisitor` skill. `uv` syncs the server's dependencies on first launch. Update later with `/plugin marketplace update inquisitor`.
+
+> Prefer to point at a local checkout instead of GitHub? `/plugin marketplace add /path/to/inquisitor` works too.
+
+For **OpenCode** and **Claude Desktop** (which don't use Claude Code plugins), or for a manual Claude Code setup, use the steps below.
+
+### Step 1 — Get the server
+
+**Option A — no clone (recommended).** Once published to PyPI, `uvx` fetches and runs it on demand — no clone, no absolute paths:
+
+```bash
+uvx inquisitor-mcp   # prints a ready message and waits for a client — Ctrl+C to exit
+```
+
+You'll reference `uvx inquisitor-mcp` directly in the config below.
+
+**Option B — from a checkout** (for local development, or before the PyPI release):
 
 ```bash
 git clone https://github.com/0x2fycy3/inquisitor.git ~/tools/inquisitor
@@ -77,7 +102,7 @@ uv sync
 
 > The clone path is up to you — just use the **same absolute path** in the config below. `~` does not expand inside JSON config files, so write the full path (e.g. `/home/you/tools/inquisitor`).
 
-You do **not** run the server manually. It's a stdio MCP server: your agent spawns and manages it automatically. (If you do run `uv run inquisitor-mcp` by hand, it prints a ready message on stderr and waits silently — that's normal. Ctrl+C to exit.)
+You do **not** run the server manually. It's a stdio MCP server: your agent spawns and manages it automatically. (If you run it by hand it prints a ready message on stderr and waits silently — that's normal.)
 
 ### Step 2 — Register the MCP server with your agent
 
@@ -89,11 +114,7 @@ You do **not** run the server manually. It's a stdio MCP server: your agent spaw
   "mcp": {
     "inquisitor": {
       "type": "local",
-      "command": [
-        "uv", "run",
-        "--directory", "/home/you/tools/inquisitor",
-        "inquisitor-mcp"
-      ],
+      "command": ["uvx", "inquisitor-mcp"],
       "enabled": true
     }
   }
@@ -106,14 +127,16 @@ You do **not** run the server manually. It's a stdio MCP server: your agent spaw
 {
   "mcpServers": {
     "inquisitor": {
-      "command": "uv",
-      "args": ["run", "--directory", "/home/you/tools/inquisitor", "inquisitor-mcp"]
+      "command": "uvx",
+      "args": ["inquisitor-mcp"]
     }
   }
 }
 ```
 
 **Claude Desktop** — same `mcpServers` block in `claude_desktop_config.json` (Settings → Developer → Edit Config).
+
+> Using a checkout instead of `uvx`? Swap the command for `uv` with args `["run", "--directory", "/home/you/tools/inquisitor", "inquisitor-mcp"]`.
 
 ### Step 3 — Install the skill (the behavioral layer)
 
@@ -190,8 +213,11 @@ inquisitor/
 │       ├── tracer.py            # callers / callees mapping
 │       └── phase_tracker.py     # Newton state machine (SQLite)
 ├── skills/inquisitor/SKILL.md   # behavioral layer for the agent
-├── tests/                       # 36 tests
-└── docs/superpowers/specs/      # design spec
+├── .claude-plugin/
+│   ├── plugin.json              # Claude Code plugin manifest
+│   └── marketplace.json         # self-hosted marketplace (source ".")
+├── .mcp.json                    # bundled MCP server (${CLAUDE_PLUGIN_ROOT})
+└── tests/                       # 36 tests
 ```
 
 The `backend/` package is importable standalone — no MCP required:
