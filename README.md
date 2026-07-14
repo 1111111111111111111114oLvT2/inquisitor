@@ -13,8 +13,6 @@ Triage · Prune · Investigate — never overcomplicate
 
 </div>
 
----
-
 ## Overview
 
 **inquisitor** makes AI agents solve problems the way a chess engine plays chess: it cannot explore every branch, so it **estimates complexity first, prunes paths that add no information, and spends its search budget only where the problem actually is**.
@@ -268,6 +266,12 @@ docling is heavy (pulls in `torch` + ML models) and slow on CPU, so `auto` only 
 - **No shell execution**: subprocess calls use argument lists, never `shell=True`.
 - **Parameterized SQL** throughout the session store.
 - The server runs locally over stdio with your user's privileges — it does not listen on the network.
+
+---
+
+## Companion skills
+
+inquisitor is a router as much as an investigator — it delegates to purpose-built skills (`/tdd`, `/code-review`, …) when one fits, but it never installs them for you. See **[docs/companion-skills.md](docs/companion-skills.md)** for the curated set worth installing alongside it (mattpocock/skills, spec-kit, last30days, ponytail, gstack) and design references.
 
 ---
 
