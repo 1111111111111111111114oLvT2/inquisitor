@@ -41,22 +41,22 @@ The methodology synthesizes four sources:
 
 Every problem goes through 10-second triage before anything else:
 
-```
-                        ┌─────────────┐
-                        │   TRIAGE    │  heuristic complexity estimate
-                        └──────┬──────┘
-          ┌────────────────────┼────────────────────┐
-          ▼                    ▼                    ▼
-     ┌─────────┐          ┌─────────┐          ┌─────────┐
-     │ TRIVIAL │          │ SIMPLE  │          │ COMPLEX │
-     └────┬────┘          └────┬────┘          └────┬────┘
-          │                    │                    │
-     fix → verify      criteria → minimal      full Newton 7-phase
-     (no ceremony)     evidence → fix →        DEFINE → AXIOMS →
-                       verify                  ANALYSIS → EXPERIMENT →
-                                               SYNTHESIS → VALIDATE →
-                                               QUERY (with session
-                                               tracking as memory)
+```mermaid
+flowchart TD
+    P([Problem]) --> T{"TRIAGE<br/>10-second<br/>complexity estimate"}
+    T -->|"obvious, local"| TR["<b>TRIVIAL</b>"]
+    T -->|"cause clear,<br/>single component"| SI["<b>SIMPLE</b>"]
+    T -->|"root cause unknown,<br/>multi-component"| CO["<b>COMPLEX</b>"]
+
+    TR --> TRp["fix → verify<br/><i>no ceremony</i>"]
+    SI --> SIp["success criteria → minimal<br/>evidence → fix → verify"]
+    CO --> COp["Newton 7-phase:<br/>DEFINE → AXIOMS → ANALYSIS →<br/>EXPERIMENT → SYNTHESIS →<br/>VALIDATE → QUERY<br/><i>+ session tracking as memory</i>"]
+
+    TR -.->|"objective trigger /<br/>failed fix / low confidence"| SI
+    SI -.->|"escalate — never downgrade"| CO
+
+    classDef triage fill:#8A2BE2,stroke:#5a1a9e,color:#fff
+    class T triage
 ```
 
 **Escalation is enforced, not just allowed.** The subjective estimate is only a starting point: objective triggers (touching infra/deploy/routing/config, auth/security, data migrations, multi-file fixes, prod-only symptoms) force a minimum class regardless of how "clear" the problem feels, and a 3-question confidence check (read the runtime path? can name the runtime signal? verified the platform assumption?) bumps the class up per unanswered question. Downgrades are never automatic. **Inflated ceremony is not allowed either** — a 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
