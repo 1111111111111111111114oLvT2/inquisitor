@@ -1,4 +1,4 @@
-"""Content extraction — HTML (trafilatura → readability) and PDF (pypdf → docling)."""
+"""Content extraction — HTML (trafilatura → readability) and PDF (pypdf default; docling optional)."""
 
 import importlib.util
 import ipaddress
