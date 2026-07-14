@@ -55,8 +55,10 @@ git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.cl
 
 ## References (not skills)
 
+These are **passive project content**, not capabilities. inquisitor's **tools** are always in the agent's tool list, and **skills** are invoked — but a reference is just a file the agent reads *if it lives in your project*. Nothing loads it automatically, and that's deliberate: you opt in per project rather than carry every design opinion into every repo.
+
 ### voltagent/awesome-design-md — design system `DESIGN.md` files (⭐ ~101k)
-Not a skill — a collection of `DESIGN.md` files distilled from popular brand design systems. Drop one into a project and a coding agent generates a matching UI. A handy reference for design/UI work; pairs with any of the build skills above.
+A collection of `DESIGN.md` files distilled from popular brand design systems. **To use one:** copy the `DESIGN.md` you want into a project — commit it at the repo root, or point your `CLAUDE.md` / `AGENTS.md` at it — and the agent reads it as context, generating UI that matches that system. inquisitor can also *fetch* a relevant one via `inquisitor_search` during a UI task, but **you** decide which to commit.
 
 <https://github.com/voltagent/awesome-design-md>
 
