@@ -169,7 +169,7 @@ the `inquisitor_*` tools appear in the tool list, and the `inquisitor` skill is 
 
 | Tool | Purpose | When |
 |------|---------|------|
-| `inquisitor_search` | Multi-backend web search (DuckDuckGo free/keyless, Brave, SearXNG) with content extraction | Local evidence insufficient: unknown errors, unfamiliar libraries, current best practices |
+| `inquisitor_search` | Multi-backend web search (DuckDuckGo free/keyless, Brave, SearXNG) with content extraction (HTML + PDF) | Local evidence insufficient: unknown errors, unfamiliar libraries, current best practices |
 | `inquisitor_analyze` | Project overview: languages, frameworks, tests, deps, git history | Entering an unfamiliar codebase |
 | `inquisitor_trace` | Symbol tracing: definition, callers, callees with `file:line` refs | Bug spans multiple functions/files |
 | `inquisitor_phase_get` / `_set` | Newton 7-phase state machine, SQLite-backed per project | COMPLEX investigations — persistent memory across turns |
@@ -244,8 +244,21 @@ results = search("python asyncio best practices", max_results=5)
 | `INQUISITOR_SEARCH_TIMEOUT` | no | `15` | HTTP timeout (seconds) |
 | `INQUISITOR_MAX_CONTENT_LENGTH` | no | `40000` | Max chars per fetched page |
 | `INQUISITOR_PREFERRED_DOMAINS` | no | — | Comma-separated domains to boost in ranking |
+| `INQUISITOR_PDF_BACKEND` | no | `auto` | PDF extraction: `auto` \| `docling` \| `pypdf` |
 
 No API key is required — DuckDuckGo works out of the box.
+
+### PDF extraction
+
+Search results and fetched URLs that are PDFs (RFCs, specs, papers, datasheets) are extracted, not skipped. The default backend is **pypdf** — pure-Python, fast, no models, handles text PDFs, and works everywhere.
+
+For complex tables or scanned/OCR PDFs, install the optional **docling** backend:
+
+```bash
+uv pip install "inquisitor-mcp[docling]"   # or: pip install "inquisitor-mcp[docling]"
+```
+
+docling is heavy (pulls in `torch` + ML models) and slow on CPU, so `auto` only uses it when it's installed **and** a GPU is present; otherwise it falls back to pypdf. Force it with `INQUISITOR_PDF_BACKEND=docling` (works on CPU, just slower), or pin pypdf with `INQUISITOR_PDF_BACKEND=pypdf`. Any docling failure falls back to pypdf, so a PDF read never hard-fails.
 
 ---
 
