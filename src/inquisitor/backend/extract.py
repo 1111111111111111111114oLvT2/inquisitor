@@ -67,7 +67,13 @@ def extract(url: str, html: str | None = None) -> str:
         if _is_pdf(content_type, url):
             content = extract_pdf(data, url)
         elif _is_texty(content_type):
-            content = _extract_html(data.decode("utf-8", errors="replace"), url)
+            m = re.search(r"charset=([^\s;]+)", content_type, flags=re.I)
+            enc = m.group(1).strip("\"'") if m else "utf-8"
+            try:
+                text = data.decode(enc, errors="replace")
+            except LookupError:
+                text = data.decode("utf-8", errors="replace")
+            content = _extract_html(text, url)
         else:
             return f"Unsupported content type '{content_type or 'unknown'}' at {url}"
 
