@@ -52,8 +52,8 @@ def is_safe_url(url: str) -> bool:
 def extract(url: str, html: str | None = None) -> str:
     """Extract readable content from a URL. Returns markdown-formatted text.
 
-    HTML goes through trafilatura → readability; PDFs (by content-type or `.pdf`
-    suffix) go through the configured PDF backend (pypdf → docling).
+    HTML goes through trafilatura → readability. PDFs (by content-type or `.pdf`
+    suffix) use the configured PDF backend (pypdf by default; docling optional with pypdf fallback).
     """
     if html is not None:
         content = _extract_html(html, url)
