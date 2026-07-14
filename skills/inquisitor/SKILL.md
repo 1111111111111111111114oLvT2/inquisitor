@@ -129,7 +129,7 @@ Newton ended *Opticks* with open Queries, not false certainty. Before closing: w
 
 Format every query as a closable item, not a musing: `[OPEN] <question> — closes when: <specific check>`. A query without a closing condition is a worry, not a query.
 
-**Resurfacing (the other half)**: at DEFINE — and at the start of any Standard-or-deeper task — check the existing ledgers: grep for `inquisitor:` markers, read `QUERIES.md` if present, run `inquisitor_phase_get` for session state. An old open query may BE the problem you were just handed, or may invalidate the assumption you were about to make. Close what you can: flip `[OPEN]` to `[CLOSED <date>: <what settled it>]` — a ledger nobody reviews is write-only noise.
+**Resurfacing (the other half)**: at DEFINE — and at the start of any Standard-or-deeper task — check the existing ledgers: grep for `inquisitor:` markers, read `QUERIES.md` if present, and if you’re in a Deep investigation (session tracking), run `inquisitor_phase_get` for session state. An old open query may BE the problem you were just handed, or may invalidate the assumption you were about to make. Close what you can: flip `[OPEN]` to `[CLOSED <date>: <what settled it>]` — a ledger nobody reviews is write-only noise.
 
 ## Always Active (all paths, all depths)
 
