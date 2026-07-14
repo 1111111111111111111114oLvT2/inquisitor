@@ -1,30 +1,32 @@
 # Inquisitor Core (always-on)
 
-Disciplined problem solving: estimate, prune, spend budget where the problem is. Full method: load the `inquisitor` skill (mandatory for COMPLEX).
+Disciplined problem solving: probe, prune, spend budget where the problem is. Full method: load the `inquisitor` skill (mandatory for the deep path).
 
-## TRIAGE every problem (10 seconds)
+## Don't classify — probe (depth is an output)
 
-| Class | Signal | Path |
+An up-front difficulty guess is an LLM's least reliable signal — biased to under-rate the hard problems. So never *declare* depth; let it emerge. Every problem runs one loop: **frame** (done = ? / must not break) → **delegate?** → **probe** (cheapest action that confirms/kills your best hypothesis) → **gate** → **act** (min change) → **verify** (name the runtime signal). The probe's result sets the depth, not your prediction.
+
+| Depth | Probe found | Do |
 |---|---|---|
-| TRIVIAL | Obvious, local, one-liner | Fix → verify → done. No ceremony. |
-| SIMPLE | Cause clear, single component | Success criteria → minimal evidence → fix → verify |
-| COMPLEX | Root cause unknown, multi-component, or 2 failed fixes | Load `inquisitor` skill: full 7-phase method + session tracking |
+| Shallow | Obvious, local, one-liner | Fix → verify → done. No ceremony. |
+| Standard | Clear single-component cause | Frame → minimal evidence → fix → verify. In your head. |
+| Deep | Unknown root cause, multi-component, or 2 failed fixes | Load `inquisitor` skill: full 7-phase method + session tracking |
 
 ## Delegate before you dig (router first)
 
 If a purpose-built skill squarely owns the task (`/tdd`, `/code-review`, `/security-review`, …), invoke it via `/skill` prose and let it drive — the Newton method is the fallback for problems no specialist owns, not the first resort. Re-deriving a skill's discipline inline is slop, like re-writing a helper two files over. Finding or installing a NEW skill is a trust-boundary action: surface it to the user, never automatic.
 
-## Auto-escalate (objective — overrides how the problem "feels")
+## The gate (objective — only raises depth, never lowers)
 
-- Config/infra/deploy/routing/CI/hosting/DNS/env → min SIMPLE + loop-closure below
-- Auth/security/secrets, data migrations/deletes/PII, concurrency → min COMPLEX
-- Fix spans 2+ files → min SIMPLE. Prod-only symptom or unreachable runtime → COMPLEX.
-- Failed attempt → up one class. Downgrades are never automatic.
+- Config/infra/deploy/routing/CI/hosting/DNS/env → min Standard + loop-closure below
+- Auth/security/secrets, data migrations/deletes/PII, concurrency → min Deep
+- Fix spans 2+ files → min Standard. Prod-only symptom or unreachable runtime → Deep.
+- Failed attempt → one depth deeper. On ambiguity go deeper; downgrading needs cited evidence.
 
-## Confidence check (before committing to a class)
+## Confidence check (behavioural, before you act)
 
 1. Read the actual runtime code path? 2. Can name the runtime signal proving the fix worked? 3. Verified the platform/tool assumption the fix depends on?
-1 NO → min SIMPLE. 2+ NO → min COMPLEX. Certainty without verification is the bug.
+1 NO → min Standard. 2+ NO → min Deep. Certainty without verification is the bug.
 
 ## Loop-closure (MANDATORY for config/infra/deploy/routing changes)
 
@@ -35,7 +37,7 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 - Name the runtime signal that proves the fix is live, and the smallest check that fails if it's a no-op. Can't name one → verify now or tell the user "I could not verify runtime; test X". Ship-if-unsure is banned.
 - Hold ≥2 competing hypotheses while investigating; experiments discriminate, not confirm.
 - Deferred verification → leave `# inquisitor: <what was skipped, how to close>` marker.
-- Open queries route to a durable home (marker / PR body / session store / QUERIES.md — ask before creating), formatted `[OPEN] <question> — closes when: <check>`. At the start of SIMPLE+ work, check existing markers and QUERIES.md — an old open query may be today's bug. Close what you can.
+- Open queries route to a durable home (marker / PR body / session store / QUERIES.md — ask before creating), formatted `[OPEN] <question> — closes when: <check>`. At the start of Standard-or-deeper work, check existing markers and QUERIES.md — an old open query may be today's bug. Close what you can.
 
 ## Shipping
 
