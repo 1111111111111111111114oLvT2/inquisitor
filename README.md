@@ -250,8 +250,7 @@ No API key is required — DuckDuckGo works out of the box.
 
 ### PDF extraction
 
-Search results and fetched URLs that are PDFs (RFCs, specs, papers, datasheets) are extracted, not skipped. The default backend is **pypdf** — pure-Python, fast, no models, handles text PDFs, and works everywhere.
-
+Search results and fetched URLs that are PDFs (RFCs, specs, papers, datasheets) are extracted, not skipped. The default policy is `auto`, which uses **pypdf** (pure-Python, fast, no models, handles text PDFs) unless docling is installed and a GPU is present.
 For complex tables or scanned/OCR PDFs, install the optional **docling** backend:
 
 ```bash
