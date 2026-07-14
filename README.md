@@ -54,8 +54,6 @@ flowchart TD
 
     TR -.->|"objective trigger /<br/>failed fix / low confidence"| SI
     SI -.->|"escalate — never downgrade"| CO
-
-    classDef default fill:#8A2BE2,stroke:#5a1a9e,color:#fff
 ```
 
 **Escalation is enforced, not just allowed.** The subjective estimate is only a starting point: objective triggers (touching infra/deploy/routing/config, auth/security, data migrations, multi-file fixes, prod-only symptoms) force a minimum class regardless of how "clear" the problem feels, and a 3-question confidence check (read the runtime path? can name the runtime signal? verified the platform assumption?) bumps the class up per unanswered question. Downgrades are never automatic. **Inflated ceremony is not allowed either** — a 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
