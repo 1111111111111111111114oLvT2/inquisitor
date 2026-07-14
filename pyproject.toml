@@ -31,7 +31,13 @@ dependencies = [
     "ddgs>=9.0.0",
     "trafilatura>=2.0.0",
     "readability-lxml>=0.8.0",
+    "pypdf>=5.0.0",
 ]
+
+[project.optional-dependencies]
+# High-fidelity PDF (complex tables, scanned/OCR) via docling. Heavy (pulls torch
+# + ML models); only worth it with a GPU. Base install uses pypdf for text PDFs.
+docling = ["docling>=2.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/0x2fycy3/inquisitor"
