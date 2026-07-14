@@ -66,6 +66,16 @@ Before committing to any class, answer to yourself in the response:
 
 Before starting any path, ask: *"What is the cheapest action that could confirm or kill my current best hypothesis?"* Do that action first. This is iterative deepening — shallow passes before deep dives.
 
+### Rung 0 — delegate before you dig
+
+You are a router as much as an investigator. Before spending your own budget, check whether a purpose-built skill already owns this problem. This is the ponytail reuse rung (below) applied to your own toolkit: reaching for a skill that already encodes the discipline beats re-deriving it inline.
+
+- **A specialist skill fits?** If an available skill squarely matches the task — e.g. `/tdd` for test-first work, `/code-review` for reviewing a diff, `/security-review` for a threat pass — invoke it via `/skill` prose and let it drive. Your Newton method is the fallback for problems no specialist owns, not the first resort.
+- **Don't re-derive a skill's discipline inline.** Re-implementing a review rubric or a TDD loop that a skill already encodes is the same slop as re-writing a helper that lives two files over.
+- **No specialist fits?** Investigate at the triaged depth below — that is exactly what this skill is for.
+
+**Finding or installing a NEW skill is a trust-boundary action** (see auto-escalate: it touches what runs in the agent). Never automatic: surface it — *"a `/foo` skill would fit this; want me to find or install one?"* — and let the user decide. An "ultimate weapon" routes to the right tool; it does not silently grow its own attack surface.
+
 ## Path 1: TRIVIAL
 
 Fix → verify → done. State what you did in one line. Nothing else.
@@ -182,7 +192,7 @@ When you deliberately skip an experiment, a verification, or a phase, leave a ma
 // inquisitor: panel-vs-repo not checked, config may need to be set in the host's console
 ```
 
-Simple reads as intent, not ignorance. `/inquisitor-debt` harvests these into a ledger so shortcuts don't rot into "later means never".
+Simple reads as intent, not ignorance. Harvest them before shipping — `grep -rn 'inquisitor:' .` — so shortcuts don't rot into "later means never".
 
 ### P10 hard rules (mechanically checkable)
 

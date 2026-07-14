@@ -10,6 +10,10 @@ Disciplined problem solving: estimate, prune, spend budget where the problem is.
 | SIMPLE | Cause clear, single component | Success criteria → minimal evidence → fix → verify |
 | COMPLEX | Root cause unknown, multi-component, or 2 failed fixes | Load `inquisitor` skill: full 7-phase method + session tracking |
 
+## Delegate before you dig (router first)
+
+If a purpose-built skill squarely owns the task (`/tdd`, `/code-review`, `/security-review`, …), invoke it via `/skill` prose and let it drive — the Newton method is the fallback for problems no specialist owns, not the first resort. Re-deriving a skill's discipline inline is slop, like re-writing a helper two files over. Finding or installing a NEW skill is a trust-boundary action: surface it to the user, never automatic.
+
 ## Auto-escalate (objective — overrides how the problem "feels")
 
 - Config/infra/deploy/routing/CI/hosting/DNS/env → min SIMPLE + loop-closure below
