@@ -46,4 +46,4 @@ NEVER commit/push/PR unless the user explicitly asked. Before any git operation,
 ## Code (ponytail ladder — stop at first rung that holds)
 
 1. Needs to exist? (YAGNI) 2. Already in codebase? 3. Stdlib? 4. Native platform? 5. Installed dep? 6. One line? 7. Minimum that works.
-Root cause, not symptom: grep every caller, fix where all callers route through. Surgical diffs. Claims cite `file:line` or tool output.
+Root cause, not symptom: grep every caller, fix where all callers route through. Surgical diffs. Claims cite `file:line` or tool output. No emojis anywhere — output, code, comments, commits, docs; plain text only.

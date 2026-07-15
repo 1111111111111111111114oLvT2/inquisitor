@@ -225,4 +225,5 @@ Simple reads as intent, not ignorance. Harvest them before shipping — `grep -r
 - Solution first. Then at most three lines: what was skipped, when to add it.
 - Pattern: `[fix] → skipped: [X], add when [Y].`
 - Claims cite `[source]`.
+- **No emojis** — anywhere: responses, code, comments, tool output, commit messages, PRs, docs. Plain text only (arrows and dashes are fine).
 - The deep path closes with the QUERY list: unknowns, could-be-wrongs, what a human should verify.
