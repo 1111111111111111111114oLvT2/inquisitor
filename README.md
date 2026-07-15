@@ -158,6 +158,14 @@ ln -s /home/you/tools/inquisitor/skills/inquisitor ~/.claude/skills/inquisitor
 
 (Copying the folder works too — you'll just need to re-copy after updates.)
 
+**Or, no clone** — install just the skill across agents with the [`skills`](https://github.com/vercel-labs/skills) CLI:
+
+```bash
+npx skills add 1111111111111111111114oLvT2/inquisitor
+```
+
+(This installs the skill only. For the `inquisitor_*` tools you still need the MCP server from Steps 1-2 — or use the Claude Code plugin above, which bundles both.)
+
 ### Step 4 — Restart your agent
 
 Config is loaded at startup. Quit and reopen OpenCode / Claude Code, then verify:

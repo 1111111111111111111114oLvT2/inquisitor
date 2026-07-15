@@ -19,7 +19,7 @@ You do **not** classify a problem before you understand it. The research is blun
 Every problem, at every depth, runs one loop:
 
 1. **Frame** — the ask in one sentence: what does *done* look like, and what must not break?
-2. **Delegate?** — is there a purpose-built skill for this? (Rung 0, below.) If yes, hand off and stop.
+2. **Delegate?** — scan the available-skills list now and match the task against it: does a purpose-built skill squarely own this? (Rung 0, below.) If yes, hand off and stop.
 3. **Probe** — run the single cheapest action that could confirm or kill your best current hypothesis: read the runtime path, reproduce, `inquisitor_trace`, one `inquisitor_search`. **The probe's result sets the depth — your prediction does not.**
 4. **Gate** — the objective triggers and the confidence check (below) can force more depth. They only ever raise it.
 5. **Act** — the minimum change at the depth the probe revealed. Ponytail ladder (below).
@@ -81,7 +81,7 @@ Certainty without verification is not a shortcut — it is the bug this skill ex
 
 ### Rung 0 — delegate before you dig
 
-You are a router as much as an investigator. Before spending your own budget, check whether a purpose-built skill already owns this problem. This is the ponytail reuse rung (below) applied to your own toolkit: reaching for a skill that already encodes the discipline beats re-deriving it inline.
+You are a router as much as an investigator. Before spending your own budget, scan the available-skills list and check whether a purpose-built skill already owns this problem. This is the ponytail reuse rung (below) applied to your own toolkit: reaching for a skill that already encodes the discipline beats re-deriving it inline.
 
 - **A specialist skill fits?** If an available skill squarely matches the task — e.g. `/tdd` for test-first work, `/code-review` for reviewing a diff, `/security-review` for a threat pass — invoke it via `/skill` prose and let it drive. Your Newton method is the fallback for problems no specialist owns, not the first resort.
 - **Don't re-derive a skill's discipline inline.** Re-implementing a review rubric or a TDD loop that a skill already encodes is the same slop as re-writing a helper that lives two files over.
