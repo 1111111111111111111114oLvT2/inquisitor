@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish to PyPI and MCP Registry
 
 on:
   release:
@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write # trusted publishing — no API token needed
+      id-token: write # OIDC: PyPI trusted publishing + MCP Registry auth — no tokens stored
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -21,3 +22,24 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      # The registry validates ownership by reading the package's README from
+      # PyPI, so PyPI must have indexed the new version before we publish here.
+      - name: Wait for PyPI to index the release
+        run: |
+          V=$(grep -m1 '^version = ' pyproject.toml | sed -E 's/.*"(.*)".*/\1/')
+          echo "Waiting for inquisitor-mcp $V on PyPI..."
+          for i in $(seq 1 30); do
+            curl -sf "https://pypi.org/pypi/inquisitor-mcp/$V/json?cb=$i" >/dev/null && exit 0
+            sleep 10
+          done
+          echo "inquisitor-mcp $V never appeared on PyPI after 5min" >&2; exit 1
+
+      - name: Install mcp-publisher
+        run: curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish
