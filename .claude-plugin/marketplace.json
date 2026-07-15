@@ -1,6 +1,6 @@
 {
   "name": "inquisitor",
-  "description": "Inquisitor — optimal-path problem solving for AI agents: the behavioral skill plus the inquisitor-mcp server.",
+  "description": "Inquisitor \u2014 hypothesis-driven problem solving for AI agents: the behavioral skill plus the inquisitor-mcp server.",
   "owner": {
     "name": "1111111111111111111114oLvT2",
     "url": "https://github.com/1111111111111111111114oLvT2"
@@ -9,7 +9,7 @@
     {
       "name": "inquisitor",
       "source": ".",
-      "description": "Optimal-path problem solving skill + inquisitor-mcp server (web search, project analysis, code tracing, Newton 7-phase state machine).",
+      "description": "Probe-falsify-escalate skill + inquisitor-mcp server (web search, project analysis, code tracing, Newton 7-phase state machine).",
       "license": "MIT"
     }
   ]
