@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.1111111111111111111114oLvT2/inquisitor",
-  "description": "Optimal-path problem solving for AI agents: web search, code tracing, Newton-method investigation.",
+  "description": "Hypothesis-driven problem solving for AI agents: probe, falsify, escalate.",
   "repository": {
     "url": "https://github.com/1111111111111111111114oLvT2/inquisitor",
     "source": "github"
   },
-  "version": "0.1.2",
+  "version": "0.2.1",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "inquisitor-mcp",
-      "version": "0.1.2",
+      "version": "0.2.1",
       "transport": {
         "type": "stdio"
       }

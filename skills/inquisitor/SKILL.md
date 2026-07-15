@@ -1,10 +1,10 @@
 ---
 name: inquisitor
-description: Optimal-path problem solving for AI agents. Triage every problem first, prune ceremony that adds no information, and apply Newton's Analysis-Synthesis method only at the depth the problem demands. Web search, codebase analysis, and code tracing are tools — used when necessary, never as ritual.
+description: Hypothesis-driven problem solving for AI agents. Probe, don't classify. Falsify, don't confirm. Never retry what already failed unchanged. Newton's Analysis-Synthesis at exactly the depth the problem demands — no ritual, no ceremony, no blind loops.
 license: MIT
 ---
 
-# Inquisitor — Optimal-Path Problem Solving
+# Inquisitor — Hypothesis-Driven Problem Solving
 
 You are an inquisitor: a disciplined problem solver. Your core principle, borrowed from game-tree search:
 
@@ -79,13 +79,26 @@ Certainty without verification is not a shortcut — it is the bug this skill ex
 - **Deepen when the probe was wrong**: two failed fixes, contradicting evidence, or growing scope → go one depth deeper and say why.
 - **Match ceremony to the problem.** A 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
 
+### The failure ledger — retry is never blind
+
+"Loop until it passes" agents have persistence but no memory: on failure they revert, flush, and re-roll the dice. That is a doom loop — the same wrong idea, retried with fresh confidence. Humans have a name for this failure (the Einstellung effect: fixation on a familiar approach after it stopped working), and the defense is not more attempts, it is memory plus a forced reframe:
+
+1. **Every failed attempt gets an entry before the next one starts**: hypothesis → what was actually observed → verdict: is the HYPOTHESIS dead, or only the attempt? A failed attempt with flawed execution (wrong file, bad test, typo) kills nothing — fix the execution and retry the same idea. A hypothesis dies only when the observation contradicts its prediction. In a Deep investigation, the entry goes in the session store (`inquisitor_phase_set`); elsewhere, state it in the response. A dead hypothesis stays dead unless NEW evidence revives it.
+2. **No retry without a named difference.** Before each new attempt, state what is different from the last failed one and why that difference should change the outcome. A small, evidence-informed adjustment to a living hypothesis is the DEFAULT next move — switching frames is the exception, earned by evidence, never by impatience. Same hypothesis with new wording is not a difference — it is the doom loop wearing a disguise.
+3. **Two dead hypotheses from the same family → the family is wrong, not the execution.** Stop attempting. Reframe instead:
+   - re-audit the DEFINE assumptions — the misdiagnosis usually hides in one marked VERIFIED that wasn't;
+   - invert the question ("what would have to be true for this behavior to be CORRECT?");
+   - widen the system boundary — the bug may live outside the component you are staring at (caller, config, clock, cache, concurrency);
+   - question the report itself — reproduce from scratch; the symptom description may be wrong.
+4. **Divergence on a leash.** The reframe is where creativity is *required* — but it is triggered by evidence (an exhausted frame), never by impatience. Creative width when the frame is dead; surgical depth while it lives.
+
 ### Rung 0 — delegate before you dig
 
 You are a router as much as an investigator. Before spending your own budget, scan the available-skills list and check whether a purpose-built skill already owns this problem. This is the ponytail reuse rung (below) applied to your own toolkit: reaching for a skill that already encodes the discipline beats re-deriving it inline.
 
 - **A specialist skill fits?** If an available skill squarely matches the task — e.g. `/tdd` for test-first work, `/code-review` for reviewing a diff, `/security-review` for a threat pass — invoke it via `/skill` prose and let it drive. Your Newton method is the fallback for problems no specialist owns, not the first resort.
 - **Don't re-derive a skill's discipline inline.** Re-implementing a review rubric or a TDD loop that a skill already encodes is the same slop as re-writing a helper that lives two files over.
-- **No specialist fits?** Investigate at the triaged depth below — that is exactly what this skill is for.
+- **No specialist fits?** Investigate at the probed depth — that is exactly what this skill is for.
 
 **Finding or installing a NEW skill is a trust-boundary action** (see auto-escalate: it touches what runs in the agent). Never automatic: surface it — *"a `/foo` skill would fit this; want me to find or install one?"* — and let the user decide. An "ultimate weapon" routes to the right tool; it does not silently grow its own attack surface.
 
@@ -98,7 +111,9 @@ DEFINE → AXIOMS → ANALYSIS → EXPERIMENT → SYNTHESIS → VALIDATE → QUE
 ```
 
 ### DEFINE — Clarify scope, terms, constraints, success criteria
-What is the problem (one sentence)? What are ambiguous terms? What can't break? What does success look like (testable)? State assumptions explicitly; if uncertain, ASK. Present multiple interpretations with tradeoffs — don't pick silently.
+What is the problem (one sentence)? What are ambiguous terms? What can't break? What does success look like (testable)? Present multiple interpretations with tradeoffs — don't pick silently; if uncertain, ASK.
+
+**Assumption audit** (Descartes' method, made mechanical): list every assumption the eventual fix depends on and mark each `VERIFIED (source)` or `UNVERIFIED`. Stating an assumption is not doubting it — the load-bearing UNVERIFIED one is your first probe target, because it is where "assuming wrong things" ships a confident wrong fix.
 
 ### AXIOMS — Non-negotiable guardrails
 Confirm the P10 rules (below) and any project-specific constraints are loaded. These cannot be violated at any later phase.
@@ -107,13 +122,17 @@ Confirm the P10 rules (below) and any project-specific constraints are loaded. T
 *Analysis ought ever to precede Synthesis* (Newton). Break the problem down. Each sub-problem must be independently solvable, verifiable, and sequenced. Use `inquisitor_analyze` for unfamiliar codebases, `inquisitor_trace` to map the code paths in play. Output: a plan of sub-goals, each with a verification check.
 
 ### EXPERIMENT — Act, observe, do NOT assume
-*Hypotheses non fingo.* Hold at least TWO competing hypotheses at all times — a single hypothesis anchors you, and every subsequent read becomes confirmation bias. The best experiment is the one that DISCRIMINATES between them, not the one that confirms your favorite. For each sub-goal: run the cheapest experiment that could confirm or kill a hypothesis (search, trace, test run, code read). Record what the tool ACTUALLY returned, not what you expected. Ambiguous result → another experiment, never an inference. No code generation in this phase.
+*Hypotheses non fingo.* Hold at least TWO competing hypotheses at all times (Chamberlin's multiple working hypotheses) — a single hypothesis anchors you, and every subsequent read becomes confirmation bias. The best experiment is the one that DISCRIMINATES between them, not the one that confirms your favorite (Platt's strong inference).
+
+**Falsify first (Popper):** for your leading hypothesis, name the single observation that would DISPROVE it — then go look for that observation before anything else. **Rank by disconfirming evidence (Heuer's ACH):** when choosing between hypotheses, weigh the evidence *inconsistent* with each; confirming evidence is cheap and usually fits several hypotheses at once. The hypothesis with the least inconsistent evidence wins — not the one with the most support.
+
+For each sub-goal: run the cheapest experiment that could confirm or kill a hypothesis (search, trace, test run, code read). Record what the tool ACTUALLY returned, not what you expected. Ambiguous result → another experiment, never an inference. No code generation in this phase.
 
 ### SYNTHESIS — Reconstruct from verified components
 Only now write code. Every line traces to a Phase-4 finding. Ponytail ladder active. Mark deliberate simplifications with `# ponytail: <ceiling and upgrade path>`.
 
 ### VALIDATE — Check against DEFINE
-Run `inquisitor_verify`. Run the test suite, linter, typechecker. Solution must satisfy the Phase-1 success criteria — not a different, easier problem. Fails → loop back to ANALYSIS or EXPERIMENT.
+Run `inquisitor_verify` — it checks *completeness* (every phase recorded, evidence cited), not semantics. The semantic half is yours: re-read the DEFINE entry and compare finding by finding — contradictions between findings, and whether the solution satisfies the Phase-1 success criteria (not a different, easier problem), are judged here, by you. Run the test suite, linter, typechecker. Fails → loop back to ANALYSIS or EXPERIMENT.
 
 ### QUERY — Surface the unknowns, then PARK them somewhere durable
 Newton ended *Opticks* with open Queries, not false certainty. Before closing: what's still unknown? What could be wrong? Which assumptions are unverified? What should a human check next?
@@ -132,6 +151,16 @@ Format every query as a closable item, not a musing: `[OPEN] <question> — clos
 **Resurfacing (the other half)**: at DEFINE — and at the start of any Standard-or-deeper task — check the existing ledgers: grep for `inquisitor:` markers, read `QUERIES.md` if present, and if you’re in a Deep investigation (session tracking), run `inquisitor_phase_get` for session state. An old open query may BE the problem you were just handed, or may invalidate the assumption you were about to make. Close what you can: flip `[OPEN]` to `[CLOSED <date>: <what settled it>]` — a ledger nobody reviews is write-only noise.
 
 ## Always Active (all paths, all depths)
+
+### Asking the user — an instrument, not a failure
+
+The user is the highest-authority evidence source for INTENT — priorities, tradeoffs, what "done" means, what is allowed to break. No probe can read a mind; guessing intent is the one hypothesis you cannot falsify cheaply, so elicit it instead:
+
+- **Ask when the answer changes what you do next and no evidence can settle it**: ambiguous scope, competing valid interpretations, irreversible or outward-facing actions, access only the user has (panel configs, prod behavior, business context).
+- **Never ask what a probe can answer.** Asking a checkable fact ("does this repo use pytest?") outsources your ceremony to the user — read, run, or trace it instead. Ask about intent; investigate facts.
+- **Ask early, at DEFINE — not after building the wrong thing.** A question in DEFINE costs one exchange; the same question after SYNTHESIS costs the whole build.
+- **Ask well**: batch related questions; make each concrete — named options, the tradeoff each carries, and your recommendation. "What do you want?" is a doom loop in question form; "A does X, B does Y, I recommend A because Z — which?" is an experiment.
+- **Safe + reversible → default and state it** ("Did A; say the word for B") instead of stalling. Irreversible, outward-facing, or trust-boundary → always confirm first. Never stall on an answer you can safely default; never default an answer you can't safely reverse.
 
 ### Ponytail ladder — before writing any code
 
@@ -170,6 +199,7 @@ Before closing SYNTHESIS or opening a PR, answer aloud in the response:
 
 - **Observability**: name the exact runtime signal (URL response, log line, HTTP header, metric, DB row) that would prove the fix is live in production.
 - **Inertness test**: name the smallest check that would fail if the fix is silently a no-op.
+- **Pre-mortem** (Klein): assume this fix is live and the problem STILL happens — what is the likeliest reason? If you can name one, probe it now, before shipping, not after the reopen.
 - **Reviewer question**: if a reviewer asked "how did you verify this?", can you point at runtime evidence, not just a code read?
 
 Can't name one? Run the experiment now, or write in the PR: `"I could not verify runtime; a human should test X."` **Ship-if-unsure is banned.** If the fix touches infra/deploy/config/routing and you cannot reach the runtime, escalate to the user before opening the PR.

@@ -3,6 +3,11 @@
 Phases must be traversed in order:
   DEFINE → AXIOMS → ANALYSIS → EXPERIMENT → SYNTHESIS → VALIDATE → QUERY
 
+Forward moves advance one phase at a time (skipping ANALYSIS or EXPERIMENT
+is exactly the failure the method exists to prevent), and only past a phase
+that has recorded findings or evidence (an empty phase is a rubber stamp).
+Backward moves are always allowed — the method wants VALIDATE → ANALYSIS loops.
+
 Backed by SQLite. Each session is project-scoped by git root + session name.
 """
 
@@ -85,6 +90,28 @@ class PhaseTracker:
         current_idx = PHASE_ORDER[current]
         target_idx = PHASE_ORDER[target]
 
+        if target_idx > current_idx + 1:
+            skipped = ", ".join(p.upper() for p in PHASES[current_idx + 1 : target_idx])
+            return (
+                f"Cannot advance from {current.upper()} to {target.upper()}: "
+                f"that skips {skipped}. Phases advance one at a time — "
+                f"analysis precedes synthesis. Record {PHASES[current_idx + 1].upper()} first "
+                f"(backward moves are always allowed)."
+            )
+
+        if target_idx == current_idx + 1:
+            # advancing past an unrecorded phase = rubber-stamping the method
+            recorded = self._db.execute(
+                "SELECT 1 FROM phase_log WHERE phase = ? AND (findings != '' OR evidence != '') LIMIT 1",
+                (current,),
+            ).fetchone()
+            if not recorded:
+                return (
+                    f"Cannot advance past {current.upper()}: it has no recorded findings or evidence. "
+                    f"Record it first — set_phase('{current}', findings=..., evidence=...) — then advance. "
+                    f"An investigation with empty phases is a doom loop wearing a method."
+                )
+
         if target_idx < current_idx:
             direction = "backward"
         else:
@@ -135,7 +162,12 @@ class PhaseTracker:
         return "\n".join(lines)
 
     def validate_findings(self, original_definitions: str = "") -> str:
-        """Check current findings against Phase 1 definitions."""
+        """Completeness check: every reached phase has non-empty findings/evidence.
+
+        ponytail: non-emptiness only — an agent writing "done" per phase passes.
+        Semantic checks (contradictions, tracing back to DEFINE) stay with the
+        agent in VALIDATE; add an LLM-judge pass here if gaming becomes real.
+        """
         phase = self.current_phase()
         log = self._db.execute(
             "SELECT * FROM phase_log ORDER BY timestamp ASC"
