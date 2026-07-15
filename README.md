@@ -8,10 +8,12 @@ Triage · Prune · Investigate — never overcomplicate
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![MCP](https://img.shields.io/badge/MCP-server-8A2BE2?style=flat-square)](https://modelcontextprotocol.io)
 [![uv](https://img.shields.io/badge/uv-package-6A3C8E?style=flat-square)](https://github.com/astral-sh/uv)
-[![CI](https://img.shields.io/github/actions/workflow/status/0x2fycy3/inquisitor/ci.yml?style=flat-square&label=CI)](https://github.com/0x2fycy3/inquisitor/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/1111111111111111111114oLvT2/inquisitor/ci.yml?style=flat-square&label=CI)](https://github.com/1111111111111111111114oLvT2/inquisitor/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)]()
 
 </div>
+
+<!-- mcp-name: io.github.1111111111111111111114oLvT2/inquisitor -->
 
 ## Overview
 
@@ -69,7 +71,7 @@ inquisitor ships as a [Claude Code plugin](https://code.claude.com/docs/en/plugi
 From within Claude Code, first add the marketplace:
 
 ```
-/plugin marketplace add 0x2fycy3/inquisitor
+/plugin marketplace add 1111111111111111111114oLvT2/inquisitor
 ```
 
 Then install the plugin:
@@ -97,7 +99,7 @@ You'll reference `uvx inquisitor-mcp` directly in the config below.
 **Option B — from a checkout** (for local development, or before the PyPI release):
 
 ```bash
-git clone https://github.com/0x2fycy3/inquisitor.git ~/tools/inquisitor
+git clone https://github.com/1111111111111111111114oLvT2/inquisitor.git ~/tools/inquisitor
 cd ~/tools/inquisitor
 uv sync
 ```
