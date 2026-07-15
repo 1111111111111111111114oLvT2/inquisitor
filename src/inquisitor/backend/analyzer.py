@@ -111,18 +111,18 @@ def _tree_section(root: Path) -> str:
         if entry.is_dir():
             if entry.name in IGNORE_DIRS:
                 continue
-            lines.append(f"  📁 {entry.name}/")
+            lines.append(f"  {entry.name}/")
             try:
                 children = sorted(entry.iterdir())
             except PermissionError:
                 continue
             for child in children[:10]:
-                prefix = "    📁" if child.is_dir() else "    📄"
-                lines.append(f"  {prefix} {child.name}")
+                suffix = "/" if child.is_dir() else ""
+                lines.append(f"      {child.name}{suffix}")
             if len(children) > 10:
                 lines.append(f"    ... ({len(children) - 10} more)")
         else:
-            lines.append(f"  📄 {entry.name}")
+            lines.append(f"  {entry.name}")
 
     return "\n".join(lines) + "\n"
 
@@ -166,7 +166,7 @@ def _framework_section(root: Path) -> str:
                 except Exception:
                     continue
                 if cfg["marker"].lower() in content.lower():
-                    lines.append(f"  ✅ {fw_name}")
+                    lines.append(f"  {fw_name}")
                     found = True
                     break
 
@@ -185,7 +185,7 @@ def _test_section(root: Path) -> str:
         p = root / td
         if p.exists() and p.is_dir():
             test_count = sum(1 for _ in p.rglob("*.py")) + sum(1 for _ in p.rglob("*.ts")) + sum(1 for _ in p.rglob("*.js"))
-            lines.append(f"  📁 {td}/ ({test_count} test files)")
+            lines.append(f"  {td}/ ({test_count} test files)")
             found = True
 
     if not found:
@@ -203,7 +203,7 @@ def _test_section(root: Path) -> str:
             content = p.read_text()
             for runner in ["pytest", "vitest", "jest", "mocha", "cargo test", "go test"]:
                 if runner in content.lower():
-                    lines.append(f"  🏃 Runner: {runner}")
+                    lines.append(f"  Runner: {runner}")
             break
 
     return "\n".join(lines) + "\n"
@@ -270,7 +270,7 @@ def _dependency_section(root: Path) -> str:
     for fname, lang in dep_files.items():
         path = root / fname
         if path.exists():
-            lines.append(f"  📄 {fname} ({lang})")
+            lines.append(f"  {fname} ({lang})")
             found = True
 
     if not found:

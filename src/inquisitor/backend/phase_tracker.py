@@ -147,10 +147,10 @@ class PhaseTracker:
         # Check: do we have a DEFINE phase?
         define_phase = [r for r in log if r["phase"] == "define"]
         if not define_phase:
-            lines.append("⚠️ **Missing DEFINE phase**. No definitions recorded.")
+            lines.append("**Missing DEFINE phase**. No definitions recorded.")
             issues += 1
         elif original_definitions:
-            lines.append("✅ DEFINE phase exists.")
+            lines.append("DEFINE phase exists.")
 
         # Check: each phase has findings
         for p in PHASES:
@@ -158,29 +158,29 @@ class PhaseTracker:
                 continue
             p_log = [r for r in log if r["phase"] == p]
             if not p_log:
-                lines.append(f"⚠️ **No findings in {p.upper()} phase**.")
+                lines.append(f"**No findings in {p.upper()} phase**.")
                 issues += 1
                 continue
             for entry in p_log:
                 if not entry["findings"] and not entry["evidence"]:
-                    lines.append(f"⚠️ **Empty entry in {p.upper()} phase**.")
+                    lines.append(f"**Empty entry in {p.upper()} phase**.")
                     issues += 1
 
         # Check: evidence cited
         evidence_count = sum(1 for r in log if r["evidence"])
         if evidence_count == 0:
-            lines.append("⚠️ **No evidence cited** in any phase.")
+            lines.append("**No evidence cited** in any phase.")
             issues += 1
         else:
-            lines.append(f"✅ Evidence cited in {evidence_count} phase entries.")
+            lines.append(f"Evidence cited in {evidence_count} phase entries.")
 
         # Check: open questions in final phase
         query_phase = [r for r in log if r["phase"] == "query"]
         if phase == "query" and not query_phase:
-            lines.append("ℹ️ QUERY phase reached but no entries yet.")
+            lines.append("QUERY phase reached but no entries yet.")
 
         if issues == 0:
-            lines.insert(1, "✅ All validations passed.\n")
+            lines.insert(1, "All validations passed.\n")
         else:
             lines.insert(1, f"Found {issues} issue(s).\n")
 

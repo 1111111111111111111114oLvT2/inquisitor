@@ -10,7 +10,7 @@ This is the curated set that pairs well. **Review a repo before installing** —
 
 ## Recommended skills
 
-### vercel-labs/skills — the discovery + install layer (⭐ ~26k)
+### vercel-labs/skills — the discovery + install layer (~26k stars)
 Not a specialist to delegate to — the **package manager for the skills ecosystem** (`npx skills`), plus a bundled `find-skills` skill. This is what makes inquisitor's Rung 0 *executable*: when inquisitor says *"a `/foo` skill would fit — want me to find one?"*, this is how you answer it, and how you install any of the specialists below from one command across agents.
 
 ```bash
@@ -20,7 +20,7 @@ npx skills add owner/repo               # install from GitHub/GitLab/git URL/loc
 
 inquisitor's own skill already uses the ecosystem's `skills/<name>/SKILL.md` layout, so it is installable the same way — `npx skills add 1111111111111111111114oLvT2/inquisitor` — with no extra packaging.
 
-### mattpocock/skills — the core companion (⭐ ~170k)
+### mattpocock/skills — the core companion (~170k stars)
 The closest match to inquisitor's delegation targets: `/tdd`, `/code-review`, `/diagnosing-bugs`, `/research`, `/implement`, and ~25 more — each a small, single-purpose skill. When inquisitor's Rung 0 says "hand off to `/tdd` or `/code-review`," this is what makes those real. **Highest-value install.**
 
 ```
@@ -28,7 +28,7 @@ The closest match to inquisitor's delegation targets: `/tdd`, `/code-review`, `/
 /plugin install mattpocock-skills@mattpocock
 ```
 
-### github/spec-kit — spec-driven feature building (⭐ ~121k)
+### github/spec-kit — spec-driven feature building (~121k stars)
 A toolkit for turning an idea into **spec → plan → tasks → implementation**. Complements inquisitor's *Frame* step and the deep-path *DEFINE* phase for greenfield and large features — the "on-ramp" scaffolding inquisitor's own method doesn't provide. Heavier; best when building a feature from scratch.
 
 ```bash
@@ -37,7 +37,7 @@ specify init my-project --integration claude    # add --integration-options="--s
 ```
 (Run `specify init --help` for the supported agent names.)
 
-### mvanhorn/last30days-skill — recency research (⭐ ~52k)
+### mvanhorn/last30days-skill — recency research (~52k stars)
 Researches a topic across Reddit, X, YouTube, HN, and the web into a grounded summary. Complements `inquisitor_search` when the question is "what's the *current* state / recent discussion of X" rather than a doc lookup. (Credited as inspiration for inquisitor's multi-source research design.)
 
 ```
@@ -45,7 +45,7 @@ Researches a topic across Reddit, X, YouTube, HN, and the web into a grounded su
 /plugin install last30days@last30days-skill
 ```
 
-### DietrichGebert/ponytail — always-on minimalism (optional, ⭐ ~83k)
+### DietrichGebert/ponytail — always-on minimalism (optional, ~83k stars)
 inquisitor already **embeds ponytail's decision ladder** (YAGNI → reuse → stdlib → native → dep → one line → minimum) for its own code output, so installing ponytail is **not required**. What it adds that inquisitor's embedded ladder can't: *always-on* enforcement across **all** your coding (a lifecycle hook keeps it active every turn, not just when inquisitor is invoked), intensity levels (`lite/full/ultra`), and audit sub-skills. Install it if you want minimalism enforced everywhere; expect some overlap in emphasis with inquisitor.
 
 ```
@@ -53,7 +53,7 @@ inquisitor already **embeds ponytail's decision ladder** (YAGNI → reuse → st
 /plugin install ponytail@ponytail
 ```
 
-### garrytan/gstack — opinionated all-in-one (à la carte, ⭐ ~121k)
+### garrytan/gstack — opinionated all-in-one (à la carte, ~121k stars)
 Garry Tan's full 23-skill setup (CEO / designer / eng-manager / release / QA roles, plus `/browse`, `/autoplan`, `/review`, `/ship`, …). It's a complete **opinionated environment**, not a single specialist — adopting all 23 alongside inquisitor + mattpocock risks overlapping roles and context bloat. Recommend **cherry-picking** individual skills (e.g. `/browse`, `/autoplan`) rather than wholesale adoption.
 
 ```bash
@@ -67,7 +67,7 @@ git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.cl
 
 These are **passive project content**, not capabilities. inquisitor's **tools** are always in the agent's tool list, and **skills** are invoked — but a reference is just a file the agent reads *if it lives in your project*. Nothing loads it automatically, and that's deliberate: you opt in per project rather than carry every design opinion into every repo.
 
-### voltagent/awesome-design-md — design system `DESIGN.md` files (⭐ ~101k)
+### voltagent/awesome-design-md — design system `DESIGN.md` files (~101k stars)
 A collection of `DESIGN.md` files distilled from popular brand design systems. **To use one:** copy the `DESIGN.md` you want into a project — commit it at the repo root, or point your `CLAUDE.md` / `AGENTS.md` at it — and the agent reads it as context, generating UI that matches that system. inquisitor can also *fetch* a relevant one via `inquisitor_search` during a UI task, but **you** decide which to commit.
 
 <https://github.com/voltagent/awesome-design-md>

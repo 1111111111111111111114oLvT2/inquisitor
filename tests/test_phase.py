@@ -89,7 +89,7 @@ def test_validate_empty_phases_warns():
     t = PhaseTracker()
     t.set_phase("define")  # no findings, no evidence
     result = t.validate_findings()
-    assert "⚠" in result or "issue" in result.lower()
+    assert "issue" in result.lower()
 
 
 def test_session_isolation():
