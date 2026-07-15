@@ -10,6 +10,16 @@ This is the curated set that pairs well. **Review a repo before installing** —
 
 ## Recommended skills
 
+### vercel-labs/skills — the discovery + install layer (⭐ ~26k)
+Not a specialist to delegate to — the **package manager for the skills ecosystem** (`npx skills`), plus a bundled `find-skills` skill. This is what makes inquisitor's Rung 0 *executable*: when inquisitor says *"a `/foo` skill would fit — want me to find one?"*, this is how you answer it, and how you install any of the specialists below from one command across agents.
+
+```bash
+npx skills find "test-first workflow"   # discover (or browse the leaderboard at skills.sh)
+npx skills add owner/repo               # install from GitHub/GitLab/git URL/local path
+```
+
+inquisitor's own skill already uses the ecosystem's `skills/<name>/SKILL.md` layout, so it is installable the same way — `npx skills add 1111111111111111111114oLvT2/inquisitor` — with no extra packaging.
+
 ### mattpocock/skills — the core companion (⭐ ~170k)
 The closest match to inquisitor's delegation targets: `/tdd`, `/code-review`, `/diagnosing-bugs`, `/research`, `/implement`, and ~25 more — each a small, single-purpose skill. When inquisitor's Rung 0 says "hand off to `/tdd` or `/code-review`," this is what makes those real. **Highest-value install.**
 
@@ -66,4 +76,4 @@ A collection of `DESIGN.md` files distilled from popular brand design systems. *
 
 ## How inquisitor uses these
 
-It only *reaches for* a skill that is **installed and squarely fits** the task; it never installs one silently. When a specialist would help but isn't present, it says so and asks — that's Rung 0 ("delegate before you dig") in the [skill](../skills/inquisitor/SKILL.md). The stars above are approximate and drift over time.
+It only *reaches for* a skill that is **installed and squarely fits** the task; it never installs one silently. When a specialist would help but isn't present, it says so and asks — that's Rung 0 ("delegate before you dig") in the [skill](../skills/inquisitor/SKILL.md). The concrete way to act on that prompt is `npx skills find <query>` (vercel-labs/skills, above); the decision to install stays yours. The stars above are approximate and drift over time.
