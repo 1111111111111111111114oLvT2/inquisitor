@@ -12,10 +12,10 @@ jobs:
       id-token: write # OIDC: PyPI trusted publishing + MCP Registry auth — no tokens stored
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v6
 
       - name: Build sdist and wheel
         run: uv build
