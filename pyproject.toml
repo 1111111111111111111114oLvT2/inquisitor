@@ -1,6 +1,6 @@
 [project]
 name = "inquisitor-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Optimal-path problem solving for AI agents — an MCP server for triage, web search, project analysis, code tracing, and Newton-method investigation."
 readme = "README.md"
 requires-python = ">=3.12"
