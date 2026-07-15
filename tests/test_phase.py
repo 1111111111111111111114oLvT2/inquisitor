@@ -27,7 +27,8 @@ def test_advance_to_next_phase():
     from inquisitor.backend.phase_tracker import PhaseTracker
 
     t = PhaseTracker()
-    result = t.set_phase("axioms", findings="scope defined")
+    t.set_phase("define", findings="scope defined")
+    result = t.set_phase("axioms", findings="rules loaded")
     assert "AXIOMS" in result
     assert t.current_phase() == "axioms"
 
@@ -37,7 +38,7 @@ def test_advance_through_all_phases():
 
     t = PhaseTracker()
     phases = ["define", "axioms", "analysis", "experiment", "synthesis", "validate", "query"]
-    for p in phases[1:]:
+    for p in phases:
         t.set_phase(p, findings=f"results for {p}")
     assert t.current_phase() == "query"
 
@@ -55,9 +56,57 @@ def test_go_backwards():
     from inquisitor.backend.phase_tracker import PhaseTracker
 
     t = PhaseTracker()
+    t.set_phase("define", findings="scoped")
+    t.set_phase("axioms", findings="rules loaded")
     t.set_phase("analysis", findings="analyzed")
     t.set_phase("define", findings="re-defining")
     assert t.current_phase() == "define"
+
+
+def test_forward_skip_rejected():
+    from inquisitor.backend.phase_tracker import PhaseTracker
+
+    t = PhaseTracker()
+    result = t.set_phase("synthesis", findings="jumping straight to code")
+    assert "Cannot advance" in result
+    assert "AXIOMS" in result  # names the skipped phases
+    assert t.current_phase() == "define"
+
+
+def test_forward_after_backward_still_one_at_a_time():
+    from inquisitor.backend.phase_tracker import PhaseTracker
+
+    t = PhaseTracker()
+    t.set_phase("define", findings="scoped")
+    t.set_phase("axioms", findings="rules")
+    t.set_phase("analysis", findings="decomposed")
+    t.set_phase("define", findings="re-scoped")  # backward loop
+    result = t.set_phase("analysis", findings="skipping axioms again")
+    assert "Cannot advance" in result
+    assert t.current_phase() == "define"
+
+
+def test_advance_past_empty_phase_rejected():
+    from inquisitor.backend.phase_tracker import PhaseTracker
+
+    t = PhaseTracker()
+    result = t.set_phase("axioms", findings="rules")  # define never recorded
+    assert "no recorded findings" in result
+    assert t.current_phase() == "define"
+    # recording define unlocks the advance
+    t.set_phase("define", findings="scoped", evidence="user report")
+    result = t.set_phase("axioms", findings="rules")
+    assert "AXIOMS" in result
+    assert t.current_phase() == "axioms"
+
+
+def test_whole_method_cannot_be_rubber_stamped():
+    from inquisitor.backend.phase_tracker import PhaseTracker
+
+    t = PhaseTracker()
+    for p in ["define", "axioms", "analysis", "experiment", "synthesis", "validate", "query"]:
+        t.set_phase(p)  # all empty
+    assert t.current_phase() == "define"  # never got past an unrecorded DEFINE
 
 
 def test_summary_includes_completed_phases():
@@ -87,7 +136,7 @@ def test_validate_empty_phases_warns():
     from inquisitor.backend.phase_tracker import PhaseTracker
 
     t = PhaseTracker()
-    t.set_phase("define")  # no findings, no evidence
+    t.set_phase("define")  # same-phase append with no findings is allowed; validate flags it
     result = t.validate_findings()
     assert "issue" in result.lower()
 
@@ -97,8 +146,9 @@ def test_session_isolation():
 
     t1 = PhaseTracker(session_name="bug-42")
     t2 = PhaseTracker(session_name="feature-7")
-    t1.set_phase("analysis")
-    assert t1.current_phase() == "analysis"
+    t1.set_phase("define", findings="scoped")
+    t1.set_phase("axioms", findings="rules")
+    assert t1.current_phase() == "axioms"
     assert t2.current_phase() == "define"
 
 
@@ -108,6 +158,7 @@ def test_project_scoped_sessions():
 
     t1 = PhaseTracker(project_path="/tmp/project-a")
     t2 = PhaseTracker(project_path="/tmp/project-b")
-    t1.set_phase("experiment", findings="different session")
-    assert t1.current_phase() == "experiment"
+    t1.set_phase("define", findings="different session")
+    t1.set_phase("axioms", findings="rules")
+    assert t1.current_phase() == "axioms"
     assert t2.current_phase() == "define"

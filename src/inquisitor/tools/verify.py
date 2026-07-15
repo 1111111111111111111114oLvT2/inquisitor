@@ -8,20 +8,19 @@ def verify(
     session_name: str = "default",
     original_definitions: str = "",
 ) -> str:
-    """Validate investigation findings against the original problem definitions.
+    """Completeness check on the investigation record.
 
-    Checks:
-    - Were all phases completed with findings?
-    - Is evidence cited for each finding?
-    - Are there contradictions between findings?
-    - Does the solution trace back to Phase 1 definitions?
-    - Are open questions documented?
+    Checks (mechanical):
+    - Was each reached phase recorded with non-empty findings?
+    - Is evidence cited in at least one phase entry?
+    - Does a DEFINE phase entry exist?
+
+    It does NOT check semantics: contradictions between findings, and whether
+    the solution actually satisfies the Phase-1 definitions, are YOUR job in
+    VALIDATE — re-read the DEFINE entry and compare, evidence line by line.
 
     Run this before declaring an investigation complete. If validation fails,
     loop back to ANALYSIS or EXPERIMENT phase to fill gaps.
-
-    Use during Phase 6 (VALIDATE) to confirm readiness for Phase 7 (QUERY).
-    Use before submitting code changes to ensure all claims are grounded.
 
     Args:
         project_path: Path to the project root (default: current directory).

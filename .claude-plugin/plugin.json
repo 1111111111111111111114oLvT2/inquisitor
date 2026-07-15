@@ -1,8 +1,8 @@
 {
   "name": "inquisitor",
   "displayName": "Inquisitor",
-  "version": "0.2.0",
-  "description": "Optimal-path problem solving for AI agents. Triage, prune ceremony, and apply Newton's Analysis-Synthesis method only at the depth the problem demands. Bundles the behavioral skill and the inquisitor-mcp server (web search, project analysis, code tracing, phase tracking).",
+  "version": "0.3.0",
+  "description": "Hypothesis-driven problem solving for AI agents: probe, falsify, escalate — never blind-retry. Bundles the behavioral skill and the inquisitor-mcp server (web search, project analysis, code tracing, phase tracking).",
   "author": {
     "name": "1111111111111111111114oLvT2",
     "url": "https://github.com/1111111111111111111114oLvT2"
@@ -10,6 +10,6 @@
   "homepage": "https://github.com/1111111111111111111114oLvT2/inquisitor",
   "repository": "https://github.com/1111111111111111111114oLvT2/inquisitor",
   "license": "MIT",
-  "keywords": ["problem-solving", "investigation", "web-search", "mcp", "newton", "triage"],
+  "keywords": ["problem-solving", "investigation", "hypothesis", "falsification", "web-search", "mcp", "newton", "probe"],
   "hooks": "./hooks/hooks.json"
 }

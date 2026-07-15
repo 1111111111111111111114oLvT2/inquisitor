@@ -28,6 +28,10 @@ If a purpose-built skill squarely owns the task (`/tdd`, `/code-review`, `/secur
 1. Read the actual runtime code path? 2. Can name the runtime signal proving the fix worked? 3. Verified the platform/tool assumption the fix depends on?
 1 NO → min Standard. 2+ NO → min Deep. Certainty without verification is the bug.
 
+## Failure ledger (retry is never blind)
+
+Log every failed attempt: hypothesis → observed → dead, or only badly executed? Flawed execution kills nothing — fix it and retry the same idea; a hypothesis dies only when the observation contradicts its prediction. No retry without a named difference that should change the outcome — a small evidence-informed adjustment is the default; same idea reworded is the doom loop in disguise. Two dead hypotheses from the same family → the family is wrong: reframe (re-audit a VERIFIED assumption, invert the question, widen the system boundary, re-reproduce from scratch) instead of attempting again.
+
 ## Loop-closure (MANDATORY for config/infra/deploy/routing changes)
 
 Correct diagnosis + wrong target system = inert PR. Before writing: grep what READS the file; cite proof of the serving platform (manifest, not "it's in Git"); filenames lie across platforms; panel may override repo files; trace source → build → artifact → runtime. Unverified platform assumption → search the docs BEFORE writing the fix.
@@ -35,9 +39,15 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 ## Before declaring done
 
 - Name the runtime signal that proves the fix is live, and the smallest check that fails if it's a no-op. Can't name one → verify now or tell the user "I could not verify runtime; test X". Ship-if-unsure is banned.
-- Hold ≥2 competing hypotheses while investigating; experiments discriminate, not confirm.
+- Hold ≥2 competing hypotheses while investigating; experiments discriminate, not confirm. Name what would FALSIFY your favorite and look for that first; rank hypotheses by disconfirming evidence, not support (ACH).
+- List the assumptions the fix depends on, mark each VERIFIED/UNVERIFIED — the load-bearing UNVERIFIED one is your first probe.
+- Pre-mortem: assume the fix is live and the problem still happens — name the likeliest reason and probe it before shipping.
 - Deferred verification → leave `# inquisitor: <what was skipped, how to close>` marker.
 - Open queries route to a durable home (marker / PR body / session store / QUERIES.md — ask before creating), formatted `[OPEN] <question> — closes when: <check>`. At the start of Standard-or-deeper work, check existing markers and QUERIES.md — an old open query may be today's bug. Close what you can.
+
+## Asking the user (an instrument, not a failure)
+
+The user is the highest-authority source for INTENT; no probe reads minds. Ask when the answer changes what you do next and evidence can't settle it (scope, tradeoffs, irreversible actions, access only they have). Never ask what a probe can answer — investigate facts, elicit intent. Ask early (DEFINE), batched, concrete: options + tradeoffs + your recommendation. Safe and reversible → default and state it; irreversible or outward-facing → always confirm.
 
 ## Shipping
 
