@@ -49,7 +49,7 @@ The probe can under-shoot (that calibration bias). These rules catch it: any tha
 | Symptom reproduces in production but not locally | Deep | — |
 | Cannot reach the runtime to observe the fix | Deep | Escalate to user before shipping |
 | Previous fix attempt failed | Up one depth | Say why |
-| Unfamiliar codebase or unfamiliar framework | Standard minimum | `inquisitor_analyze` first |
+| Unfamiliar codebase, first turn touching it this session | Standard minimum | `inquisitor_analyze` BEFORE the first manual `Read`/`Grep` — at repo scale it IS the cheap probe, not a heavier alternative to one |
 
 **Tie-break: on ambiguity, go deeper.** The model's measured bias is to under-investigate, so the default correction runs toward more depth. Dropping to a shallower depth needs cited evidence, never a feeling.
 
@@ -71,11 +71,13 @@ Certainty without verification is not a shortcut — it is the bug this skill ex
 
 *"What is the single cheapest action that could confirm or kill my current best hypothesis?"* Do it **before** predicting anything. Its result — not your estimate — tells you how deep to go. Shallow passes reveal whether a deep dive is warranted: this is iterative deepening, and it is the whole mechanism.
 
+**Repo-scale exception:** "cheapest" is scored at the scale of the question, not in absolute terms. For a symbol-level question ("what does this function do") a single `Read` is cheaper than a full scan — use it. For a repo-level question on the first turn touching an unfamiliar codebase this session ("what does this project even look like"), `inquisitor_analyze` IS the cheap action — a string of individual `Read`/`Grep` calls chasing the same answer is the expensive path wearing a cheap disguise, one call at a time.
+
 ### Pruning (alpha-beta for investigations)
 
 - **Prune any step that adds no information.** If the frame is already answered by the user's message, don't re-derive it.
 - **Prune the web search when local evidence answers the question.** Read the error, read the code, THEN search if still unclear. Search is a tool, not a ritual.
-- **Prune the codebase scan when you already know the file.** `inquisitor_analyze` is for unfamiliar territory, not every task.
+- **Prune the codebase scan when you already know the file.** `inquisitor_analyze` is for unfamiliar territory, not every task — but "unfamiliar territory" means the first turn touching a given repo this session, not "after I've already read a few files by hand." Reach for it before the manual reads start, not after they've made it feel unnecessary.
 - **Deepen when the probe was wrong**: two failed fixes, contradicting evidence, or growing scope → go one depth deeper and say why.
 - **Match ceremony to the problem.** A 7-phase investigation of a typo is as wrong as a blind guess at a race condition.
 
@@ -109,6 +111,10 @@ When the probe reveals a genuinely unknown root cause — or a gate trigger forc
 ```
 DEFINE → AXIOMS → ANALYSIS → EXPERIMENT → SYNTHESIS → VALIDATE → QUERY
 ```
+
+### Composing with a host planning tool
+
+Some environments provide their own plan-then-approve workflow (e.g. Claude Code's Plan Mode) — getting explicit user sign-off on an approach before implementation. When one is available for a Deep task, don't run it disconnected from the session store: that produces exactly the failure this method exists to prevent — real investigation discipline happening, with no cross-turn memory of it. Instead: `inquisitor_phase_set` DEFINE's findings before invoking the tool; treat its own explore/design/review steps as ANALYSIS + EXPERIMENT + SYNTHESIS; call `inquisitor_phase_set` once more immediately after the tool hands control back, consolidating what it found into the session store before implementation starts. The planning tool owns getting sign-off; the session store still owns memory across turns — using one is not a reason to drop the other.
 
 ### DEFINE — Clarify scope, terms, constraints, success criteria
 What is the problem (one sentence)? What are ambiguous terms? What can't break? What does success look like (testable)? Present multiple interpretations with tradeoffs — don't pick silently; if uncertain, ASK.
@@ -149,6 +155,8 @@ Newton ended *Opticks* with open Queries, not false certainty. Before closing: w
 Format every query as a closable item, not a musing: `[OPEN] <question> — closes when: <specific check>`. A query without a closing condition is a worry, not a query.
 
 **Resurfacing (the other half)**: at DEFINE — and at the start of any Standard-or-deeper task — check the existing ledgers: grep for `inquisitor:` markers, read `QUERIES.md` if present, and if you’re in a Deep investigation (session tracking), run `inquisitor_phase_get` for session state. An old open query may BE the problem you were just handed, or may invalidate the assumption you were about to make. Close what you can: flip `[OPEN]` to `[CLOSED <date>: <what settled it>]` — a ledger nobody reviews is write-only noise.
+
+**Don't let your OWN Deep session go stale.** Opening a Deep investigation (even just DEFINE) and then drifting into several turns of unrelated Shallow/Standard work without returning to it leaves a dangling session record — half-started, and indistinguishable later from one that's actually still active. Before closing any response, if a Deep session you opened earlier this conversation hasn't been touched in the last 2-3 turns: either close it now (`inquisitor_phase_set` to VALIDATE/QUERY, noting it was completed informally or superseded) or say so explicitly in the response ("leaving the Deep investigation on X open — the remaining work didn't need it"). Silence is what turns a paused session into a stale one.
 
 ## Always Active (all paths, all depths)
 

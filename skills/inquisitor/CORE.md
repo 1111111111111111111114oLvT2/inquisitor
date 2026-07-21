@@ -44,6 +44,7 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 - Pre-mortem: assume the fix is live and the problem still happens — name the likeliest reason and probe it before shipping.
 - Deferred verification → leave `# inquisitor: <what was skipped, how to close>` marker.
 - Open queries route to a durable home (marker / PR body / session store / QUERIES.md — ask before creating), formatted `[OPEN] <question> — closes when: <check>`. At the start of Standard-or-deeper work, check existing markers and QUERIES.md — an old open query may be today's bug. Close what you can.
+- Opened a Deep session earlier and haven't touched it in the last 2-3 turns? Close it (`inquisitor_phase_set` to VALIDATE/QUERY) or say so explicitly — a dangling session is worse than none.
 
 ## Asking the user (an instrument, not a failure)
 

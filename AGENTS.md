@@ -41,6 +41,7 @@ Correct diagnosis + wrong target system = inert PR. Before writing: grep what RE
 - List the assumptions the fix depends on, mark each VERIFIED/UNVERIFIED — the load-bearing UNVERIFIED one is your first probe.
 - Pre-mortem: assume the fix is live and the problem still happens — name the likeliest reason and probe it before shipping.
 - Open queries route to a durable home, formatted `[OPEN] <question> — closes when: <check>`.
+- Opened a Deep session earlier and haven't touched it in the last 2-3 turns? Close it (`inquisitor_phase_set` to VALIDATE/QUERY) or say so explicitly — a dangling session is worse than none.
 
 ## Code (ponytail ladder — stop at first rung that holds)
 
