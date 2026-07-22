@@ -53,6 +53,16 @@ inquisitor already **embeds ponytail's decision ladder** (YAGNI → reuse → st
 /plugin install ponytail@ponytail
 ```
 
+### microsoft/SkillOpt — SkillOpt-Sleep, a nightly self-evolving companion skill (~14k stars)
+Not a specialist to delegate a *task* to — a nightly offline loop that harvests your project's own Claude Code session transcripts, mines recurring tasks, replays them, and proposes bounded edits to a companion `SKILL.md`, accepted only behind a held-out validation gate and staged for you to `adopt`. Complements inquisitor's failure-ledger and QUERY discipline: those live in the current session or a session store, but nothing today turns repeated lessons across *many* sessions into a durable, tested skill update. Point it at a project-specific companion skill, not at inquisitor's own `CORE.md` — inquisitor's method is a fixed discipline, not task-specific tribal knowledge to auto-edit.
+
+```bash
+git clone https://github.com/microsoft/SkillOpt && cd SkillOpt
+/plugin marketplace add ./plugins/claude-code
+/plugin install skillopt-sleep@skillopt-sleep
+```
+Then `/skillopt-sleep status`. Default backend is `mock` (no provider calls, plumbing check only) — a real backend sends transcript excerpts to the selected provider, so read `docs/sleep/README.md` in that repo before pointing it at real sessions.
+
 ### garrytan/gstack — opinionated all-in-one (à la carte, ~121k stars)
 Garry Tan's full 23-skill setup (CEO / designer / eng-manager / release / QA roles, plus `/browse`, `/autoplan`, `/review`, `/ship`, …). It's a complete **opinionated environment**, not a single specialist — adopting all 23 alongside inquisitor + mattpocock risks overlapping roles and context bloat. Recommend **cherry-picking** individual skills (e.g. `/browse`, `/autoplan`) rather than wholesale adoption.
 
